@@ -1,11 +1,10 @@
-package com.resuelveya.features.home
+package com.resuelveya.features.home.view
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import pe.edu.cibertec.resuelveyamovil.R
 
 class MainClienteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
