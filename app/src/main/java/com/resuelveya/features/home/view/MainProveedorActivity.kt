@@ -1,4 +1,4 @@
-package com.resuelveya.features.home
+package com.resuelveya.features.home.view
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

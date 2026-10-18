@@ -30,11 +30,11 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".features.home.MainClienteActivity"
+            android:name=".features.home.view.MainClienteActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".features.home.MainProveedorActivity"
+            android:name=".features.home.view.MainProveedorActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>
