@@ -10,15 +10,16 @@ import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.resuelveya.android.R
+import com.resuelveya.android.databinding.FragmentTecnicosBinding
+import com.resuelveya.android.features.tecnicos.adapter.TecnicoAdapter
+import com.resuelveya.android.features.tecnicos.network.RetrofitClient
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.resuelveya.android.features.tecnicos.adapter.TecnicoAdapter
-import com.resuelveya.databinding.FragmentTecnicosBinding
-import com.resuelveya.android.features.tecnicos.network.RetrofitClient
-import com.resuelveya.R
 
 class TecnicosFragment : Fragment() {
 
@@ -58,14 +59,21 @@ class TecnicosFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvTitulo.text = categoriaNombre
+        binding.tvTitulo.text = categoriaNombre.ifBlank { "Técnicos Disponibles" }
 
         adapter = TecnicoAdapter { tecnico ->
-            val fragment = TecnicoDetalleFragment.newInstance(tecnico.id, tecnico.nombre)
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
-                .addToBackStack(null)
-                .commit()
+            val bundle = bundleOf(
+                "tecnicoId" to tecnico.id,
+                "tecnicoNombre" to tecnico.nombre
+            )
+            try {
+                findNavController().navigate(
+                    R.id.action_tecnicosFragment_to_tecnicoDetalleFragment,
+                    bundle
+                )
+            } catch (e: Exception) {
+                Log.e("TecnicosFragment", "Error navegando a tecnicoDetalleFragment", e)
+            }
         }
         binding.rvTecnicos.layoutManager = LinearLayoutManager(requireContext())
         binding.rvTecnicos.adapter = adapter
@@ -83,11 +91,11 @@ class TecnicosFragment : Fragment() {
 
     private suspend fun cargarTecnicos(nombre: String?) {
         try {
+            val idParam = if (categoriaId > 0L) categoriaId else null
             val respuesta = RetrofitClient.api.listarTecnicos(
-                categoriaId = categoriaId,
+                categoriaId = idParam,
                 nombre = nombre?.takeIf { it.isNotBlank() }
             )
-            // Si la vista ya se destruyó mientras esperábamos, no hacemos nada
             val b = _binding ?: return
 
             val lista = respuesta.body()?.content.orEmpty()

@@ -6,9 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.firebase.auth.FirebaseAuth
+import com.resuelveya.android.R
+import com.resuelveya.android.databinding.FragmentHomeBinding
 import com.resuelveya.android.features.tecnicos.adapter.EspecialidadAdapter
 import com.resuelveya.android.features.tecnicos.network.RetrofitClient
 import kotlinx.coroutines.launch
@@ -32,17 +37,24 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val displayName = currentUser?.displayName?.ifBlank { null }
+            ?: currentUser?.email?.substringBefore("@")
+            ?: "Cliente"
+        binding.tvGreeting.text = "Hola, $displayName 👋"
+
         adapter = EspecialidadAdapter { especialidad ->
             Log.d("HomeFragment", "Click en: ${especialidad.nombre} (id=${especialidad.id})")
 
-            val fragment = TecnicosFragment.newInstance(
-                especialidad.id.toLong(),
-                especialidad.nombre
+            val bundle = bundleOf(
+                "categoriaId" to especialidad.id.toLong(),
+                "categoriaNombre" to especialidad.nombre
             )
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
-                .addToBackStack(null)
-                .commit()
+            try {
+                findNavController().navigate(R.id.action_homeFragment_to_tecnicosFragment, bundle)
+            } catch (e: Exception) {
+                Log.e("HomeFragment", "Error navegando a tecnicosFragment", e)
+            }
         }
 
         binding.rvEspecialidades.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -58,11 +70,13 @@ class HomeFragment : Fragment() {
                 adapter.submitList(lista)
             } catch (e: Exception) {
                 Log.e("HomeFragment", "Error al cargar especialidades", e)
-                Toast.makeText(
-                    requireContext(),
-                    "No se pudo conectar con el servidor",
-                    Toast.LENGTH_LONG
-                ).show()
+                if (_binding != null) {
+                    Toast.makeText(
+                        requireContext(),
+                        "No se pudo conectar con el servidor",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     }

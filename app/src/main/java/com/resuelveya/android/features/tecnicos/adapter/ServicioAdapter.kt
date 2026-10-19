@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.resuelveya.databinding.ItemServicioBinding
+import com.resuelveya.android.databinding.ItemServicioBinding
 import com.resuelveya.android.features.tecnicos.model.Servicio
 
 class ServicioAdapter : ListAdapter<Servicio, ServicioAdapter.ServicioViewHolder>(Diff) {

@@ -6,7 +6,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.resuelveya.android.R
 import com.resuelveya.android.core.session.SessionManager
 import com.resuelveya.android.databinding.ActivityMainClienteBinding
 import com.resuelveya.android.features.auth.view.AuthActivity
@@ -14,6 +20,8 @@ import com.resuelveya.android.features.auth.view.AuthActivity
 class MainClienteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainClienteBinding
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,34 +31,53 @@ class MainClienteActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
-        setupViews()
-        setupListeners()
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.fragmentContainerViewCliente) as NavHostFragment
+        navController = navHostFragment.navController
+
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.homeFragment,
+                R.id.inicioClienteFragment,
+                R.id.tecnicosFragment
+            )
+        )
+
+        binding.toolbarCliente.setupWithNavController(navController, appBarConfiguration)
+        binding.bottomNavigationCliente.setupWithNavController(navController)
+
+        setupToolbarMenu()
     }
 
-    private fun setupViews() {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        val email = currentUser?.email ?: "Sin correo"
-        val nombre = currentUser?.displayName?.ifBlank { null } ?: email
-
-        binding.tvBienvenidaCliente.text = "Hola, $nombre"
-        binding.tvEmailCliente.text = email
-        binding.chipRolCliente.text = "ROL: " + (SessionManager.getRol() ?: "CLIENTE")
-    }
-
-    private fun setupListeners() {
-        binding.btnLogoutCliente.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            SessionManager.logout()
-
-            val intent = Intent(this, AuthActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    private fun setupToolbarMenu() {
+        binding.toolbarCliente.inflateMenu(R.menu.menu_toolbar_cliente)
+        binding.toolbarCliente.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_logout -> {
+                    performLogout()
+                    true
+                }
+                else -> false
             }
-            startActivity(intent)
-            finish()
         }
+    }
+
+    private fun performLogout() {
+        FirebaseAuth.getInstance().signOut()
+        SessionManager.logout()
+
+        val intent = Intent(this, AuthActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }

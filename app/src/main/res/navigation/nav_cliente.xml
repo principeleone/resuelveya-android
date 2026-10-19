@@ -1,6 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_cliente">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_cliente"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.resuelveya.android.features.tecnicos.HomeFragment"
+        android:label="Inicio"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_tecnicosFragment"
+            app:destination="@id/tecnicosFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_tecnicoDetalleFragment"
+            app:destination="@id/tecnicoDetalleFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/inicioClienteFragment"
+        android:name="com.resuelveya.android.features.catalogo.view.InicioClienteFragment"
+        android:label="Catálogo"
+        tools:layout="@layout/fragment_inicio_cliente">
+        <action
+            android:id="@+id/action_inicioClienteFragment_to_tecnicosFragment"
+            app:destination="@id/tecnicosFragment" />
+        <action
+            android:id="@+id/action_inicioClienteFragment_to_tecnicoDetalleFragment"
+            app:destination="@id/tecnicoDetalleFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tecnicosFragment"
+        android:name="com.resuelveya.android.features.tecnicos.TecnicosFragment"
+        android:label="Técnicos"
+        tools:layout="@layout/fragment_tecnicos">
+        <action
+            android:id="@+id/action_tecnicosFragment_to_tecnicoDetalleFragment"
+            app:destination="@id/tecnicoDetalleFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/tecnicoDetalleFragment"
+        android:name="com.resuelveya.android.features.tecnicos.TecnicoDetalleFragment"
+        android:label="Detalle del Técnico"
+        tools:layout="@layout/fragment_tecnico_detalle" />
 
 </navigation>

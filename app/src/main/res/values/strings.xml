@@ -53,6 +53,14 @@
     <string name="proveedor_btn_guardar_servicio">GUARDAR SERVICIO</string>
     <string name="proveedor_btn_cancelar_servicio">CANCELAR</string>
 
+    <!-- Catálogo Cliente -->
+    <string name="catalogo_buscar">Buscar servicio o categoría...</string>
+    <string name="catalogo_cerca_titulo">Técnicos cerca de ti</string>
+    <string name="catalogo_cerca_sub">Encuentra profesionales disponibles en tu zona</string>
+    <string name="catalogo_ver_mapa">VER TODOS</string>
+    <string name="catalogo_categorias">Categorías de servicios</string>
+    <string name="catalogo_vacio">No se encontraron categorías disponibles</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

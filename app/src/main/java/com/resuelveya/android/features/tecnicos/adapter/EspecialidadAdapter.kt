@@ -3,8 +3,8 @@ package com.resuelveya.android.features.tecnicos.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.resuelveya.R
-import com.resuelveya.databinding.ItemEspecialidadBinding
+import com.resuelveya.android.R
+import com.resuelveya.android.databinding.ItemEspecialidadBinding
 import com.resuelveya.android.features.tecnicos.model.Especialidad
 
 class EspecialidadAdapter(
@@ -39,14 +39,14 @@ class EspecialidadAdapter(
 
     // Asigna el ícono local según el nombre que llega de la API
     private fun iconoPara(nombre: String): Int = when (nombre.lowercase()) {
-        "electricidad" -> R.drawable.ic_gasfiteria
-        "gasfiteria", "gasfiteria" -> R.drawable.ic_gasfiteria
-        "cerrajeria", "cerrajeria" -> R.drawable.ic_cerrajeria
-        "jardineria" -> R.drawable.ic_jardineria
-        "pintura" -> R.drawable.ic_pintura
-        "carpintería", "carpinteria" -> R.drawable.ic_carpinteria
-        "refrigeracion", "refrigeracion" -> R.drawable.ic_carpinteria
-        "computacion", "computacion" -> R.drawable.ic_computacion
+        "electricidad" -> R.drawable.ic_cat_electricidad
+        "gasfitería", "gasfiteria" -> R.drawable.ic_cat_gasfiteria
+        "cerrajería", "cerrajeria" -> R.drawable.ic_cerrajeria
+        "jardinería", "jardineria" -> R.drawable.ic_jardineria
+        "pintura" -> R.drawable.ic_cat_pintura
+        "carpintería", "carpinteria" -> R.drawable.ic_cat_carpinteria
+        "refrigeración", "refrigeracion" -> R.drawable.ic_cat_refrigeracion
+        "computación", "computacion" -> R.drawable.ic_cat_computacion
         else -> R.drawable.ic_otros // ícono por defecto
     }
 }

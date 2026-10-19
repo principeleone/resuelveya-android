@@ -1,13 +1,13 @@
 package com.resuelveya.android.features.tecnicos.adapter
 
-import android.R
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.resuelveya.databinding.ItemTecnicoBinding
+import com.resuelveya.android.R
+import com.resuelveya.android.databinding.ItemTecnicoBinding
 import com.resuelveya.android.features.tecnicos.model.Tecnico
 
 class TecnicoAdapter(
@@ -33,8 +33,8 @@ class TecnicoAdapter(
             Glide.with(binding.root)
                 .load(t.fotoUrl)
                 .circleCrop()
-                .placeholder(R.drawable.ic_menu_myplaces)
-                .error(R.drawable.ic_menu_myplaces)
+                .placeholder(R.drawable.ic_person)
+                .error(R.drawable.ic_person)
                 .into(binding.ivFoto)
 
             binding.root.setOnClickListener { onClick(t) }

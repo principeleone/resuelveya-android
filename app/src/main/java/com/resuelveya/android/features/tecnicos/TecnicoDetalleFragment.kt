@@ -1,6 +1,5 @@
 package com.resuelveya.android.features.tecnicos
 
-import android.R
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,15 +9,16 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.launch
+import com.resuelveya.android.R
+import com.resuelveya.android.databinding.FragmentTecnicoDetalleBinding
 import com.resuelveya.android.features.tecnicos.adapter.ServicioAdapter
-import com.resuelveya.databinding.FragmentTecnicoDetalleBinding
-import com.resuelveya.android.features.tecnicos.model.LoginRequest
 import com.resuelveya.android.features.tecnicos.model.TecnicoCompleto
 import com.resuelveya.android.features.tecnicos.network.RetrofitClient
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class TecnicoDetalleFragment : Fragment() {
 
@@ -59,7 +59,9 @@ class TecnicoDetalleFragment : Fragment() {
         binding.tvNombre.text = tecnicoNombre
 
         binding.tvTitulo.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            if (!findNavController().navigateUp()) {
+                parentFragmentManager.popBackStack()
+            }
         }
 
         binding.rvServicios.layoutManager = LinearLayoutManager(requireContext())
@@ -72,21 +74,12 @@ class TecnicoDetalleFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch { cargarDetalle() }
     }
 
-    // TEMPORAL: login de prueba. Se reemplaza por la pantalla de login real.
-    private suspend fun asegurarSesion() {
-        if (RetrofitClient.token != null) return
-        val res = RetrofitClient.api.login(
-            LoginRequest("carlos@ejemplo.com", "Password123")
-        )
-        RetrofitClient.token = res.token
-    }
-
     private suspend fun cargarDetalle() {
         try {
-            asegurarSesion()
             val tecnico = RetrofitClient.api.getTecnicoCompleto(tecnicoId)
             if (_binding == null) return
             mostrar(tecnico)
+
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -118,8 +111,8 @@ class TecnicoDetalleFragment : Fragment() {
         Glide.with(binding.root)
             .load(t.fotoUrl)
             .circleCrop()
-            .placeholder(R.drawable.ic_menu_myplaces)
-            .error(R.drawable.ic_menu_myplaces)
+            .placeholder(R.drawable.ic_person)
+            .error(R.drawable.ic_person)
             .into(binding.ivFoto)
 
         val servicios = t.servicios.orEmpty().filter { it.activo != false }
