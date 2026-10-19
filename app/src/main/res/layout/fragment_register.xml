@@ -87,35 +87,15 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilApellidos"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
-                android:hint="@string/auth_apellidos"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tilNombres"
-                app:startIconDrawable="@drawable/ic_person">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etApellidos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPersonName|textCapWords" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilCorreoReg"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
                 android:hint="@string/auth_correo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tilApellidos"
-                app:startIconDrawable="@drawable/ic_email">
+                app:startIconDrawable="@drawable/ic_email"
+                tools:layout_editor_absoluteY="246dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCorreoReg"
@@ -144,80 +124,18 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Sección de campos específicos para Proveedor -->
-            <LinearLayout
-                android:id="@+id/layoutCamposProveedor"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tilTelefono"
-                tools:visibility="visible">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilEspecialidad"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_md"
-                    android:hint="@string/auth_especialidad"
-                    app:startIconDrawable="@drawable/ic_build">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEspecialidad"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapWords" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilExperiencia"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_md"
-                    android:hint="@string/auth_experiencia"
-                    app:startIconDrawable="@drawable/ic_schedule">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etExperiencia"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPresentacion"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_md"
-                    android:hint="@string/auth_presentacion"
-                    app:startIconDrawable="@drawable/ic_assignment">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPresentacion"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="top"
-                        android:lines="3"
-                        android:inputType="textMultiLine|textCapSentences" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilPasswordReg"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
                 android:hint="@string/auth_password"
                 app:endIconMode="password_toggle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layoutCamposProveedor"
-                app:startIconDrawable="@drawable/ic_lock">
+                app:startIconDrawable="@drawable/ic_lock"
+                tools:layout_editor_absoluteY="520dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPasswordReg"
