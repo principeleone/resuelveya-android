@@ -29,4 +29,30 @@
     <string name="auth_direccion">Dirección</string>
     <string name="auth_ya_cuenta">¿Ya tienes una cuenta?</string>
     <string name="auth_ir_login">Inicia sesión</string>
+    <!-- Navegación Proveedor -->
+    <string name="proveedor_menu_inicio">Inicio</string>
+    <string name="proveedor_menu_solicitudes">Solicitudes</string>
+    <string name="proveedor_menu_servicios">Mis Servicios</string>
+    <string name="proveedor_menu_perfil">Perfil</string>
+    <string name="proveedor_stat_nuevas">Nuevas</string>
+    <string name="proveedor_stat_proceso">En Proceso</string>
+    <string name="proveedor_stat_finalizados">Finalizados</string>
+    <string name="proveedor_stat_calificacion">Calificación</string>
+    <string name="proveedor_ultimas">Últimas solicitudes</string>
+
+    <!-- Servicios Proveedor -->
+    <string name="proveedor_vacio_servicios">Aún no tienes servicios registrados.\nPulsa el botón + para agregar uno.</string>
+    <string name="proveedor_cd_agregar">Agregar nuevo servicio</string>
+    <string name="proveedor_cd_editar">Editar servicio</string>
+    <string name="proveedor_cd_eliminar">Eliminar servicio</string>
+    <string name="proveedor_nombre_servicio">Título del servicio</string>
+    <string name="proveedor_especialidad">Categoría o Especialidad</string>
+    <string name="proveedor_descripcion_servicio">Descripción del servicio</string>
+    <string name="proveedor_tarifa">Precio estimado (S/)</string>
+    <string name="proveedor_duracion">Tiempo estimado (horas)</string>
+    <string name="proveedor_btn_guardar_servicio">GUARDAR SERVICIO</string>
+    <string name="proveedor_btn_cancelar_servicio">CANCELAR</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

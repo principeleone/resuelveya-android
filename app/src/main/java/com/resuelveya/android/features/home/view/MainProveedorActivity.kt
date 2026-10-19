@@ -14,7 +14,7 @@ import com.resuelveya.android.R
 import com.resuelveya.android.databinding.ActivityMainProveedorBinding
 
 class MainProveedorActivity : AppCompatActivity() {
-//Alex
+
     private lateinit var binding: ActivityMainProveedorBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration

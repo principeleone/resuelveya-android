@@ -77,6 +77,10 @@ class SessionManager(context: Context) {
             return instance?.getRol()
         }
 
+        fun isLoggedIn(): Boolean {
+            return instance?.isLoggedIn() ?: false
+        }
+
         fun logout() {
             instance?.logout()
         }

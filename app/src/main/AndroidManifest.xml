@@ -15,7 +15,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".features.auth.view.SplashActivity"
             android:exported="true"
@@ -28,6 +28,14 @@
         </activity>
         <activity
             android:name=".features.auth.view.AuthActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".features.home.view.MainClienteActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".features.home.view.MainProveedorActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
     </application>

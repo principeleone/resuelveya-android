@@ -21,7 +21,17 @@
         android:id="@+id/misServiciosFragment"
         android:name="com.resuelveya.android.features.proveedor.view.MisServiciosFragment"
         android:label="@string/proveedor_menu_servicios"
-        tools:layout="@layout/fragment_mis_servicios" />
+        tools:layout="@layout/fragment_mis_servicios">
+        <action
+            android:id="@+id/action_misServiciosFragment_to_servicioFormFragment"
+            app:destination="@id/servicioFormFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/servicioFormFragment"
+        android:name="com.resuelveya.android.features.proveedor.view.ServicioFormFragment"
+        android:label="Nuevo Servicio"
+        tools:layout="@layout/fragment_servicio_form" />
 
     <fragment
         android:id="@+id/perfilFragment"
