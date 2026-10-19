@@ -29,4 +29,6 @@
     <string name="auth_direccion">Dirección</string>
     <string name="auth_ya_cuenta">¿Ya tienes una cuenta?</string>
     <string name="auth_ir_login">Inicia sesión</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
