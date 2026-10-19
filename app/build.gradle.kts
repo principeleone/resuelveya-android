@@ -1,15 +1,16 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.resuelveya"
+    namespace = "com.resuelveya.android"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.resuelveya"
+        applicationId = "com.resuelveya.android"
         minSdk = 24
         targetSdk = 37
         versionCode = 1
@@ -29,13 +30,23 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    viewBinding{
+        enable=true
+    }
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:35.0.2"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.core)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)

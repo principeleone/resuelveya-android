@@ -1,5 +1,23 @@
 <resources>
-    <string name="app_name">movil</string>
+    <string name="app_name">ResuelveYa Android</string>
+
+    <string name="splash_lema">Técnicos de confianza, al instante</string>
+    <string name="splash_verificando">Verificando sesión...</string>
+    <string name="auth_bienvenido">Bienvenido</string>
+    <string name="auth_subtitulo">Inicia sesión para continuar</string>
+    <string name="auth_correo">Correo electrónico</string>
+    <string name="auth_password">Contraseña</string>
+    <string name="auth_error_login">Correo o contraseña incorrectos</string>
+    <string name="auth_btn_login">INICIAR SESIÓN</string>
+    <string name="auth_sin_cuenta">¿No tienes cuenta?</string>
+    <string name="auth_ir_registro">Regístrate</string>
+    <string name="auth_rol_cliente">Soy Cliente</string>
+    <string name="auth_rol_proveedor">Soy Proveedor</string>
+    <string name="auth_nombres">Nombres</string>
+    <string name="auth_apellidos">Apellidos</string>
+    <string name="auth_telefono">Teléfono</string>
+    <string name="auth_confirmar">Confirmar contraseña</string>
+    <string name="auth_btn_registrar">REGISTRARME</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
