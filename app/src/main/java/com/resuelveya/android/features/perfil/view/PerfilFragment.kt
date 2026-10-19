@@ -2,10 +2,10 @@ package com.resuelveya.android.features.perfil.view
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.resuelveya.android.core.session.SessionManager
 import com.resuelveya.android.databinding.FragmentPerfilBinding
@@ -27,21 +27,24 @@ class PerfilFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViews()
-        setupListeners()
+
+        setupProfile()
+        setupLogout()
     }
 
-    private fun setupViews() {
+    private fun setupProfile() {
         val currentUser = FirebaseAuth.getInstance().currentUser
-        val rol = SessionManager.getRol() ?: "TECNICO"
+        val displayName = currentUser?.displayName?.ifBlank { null }
+            ?: currentUser?.email?.substringBefore("@")
+            ?: "Cliente ResuelveYa"
+        binding.tvNombrePerfil.text = displayName
 
-        binding.tvNombrePerfil.text = currentUser?.displayName?.ifBlank { currentUser.email } ?: currentUser?.email ?: "Usuario"
+        val rol = SessionManager.getRol() ?: "CLIENTE"
         binding.chipRol.text = rol.uppercase()
     }
 
-    private fun setupListeners() {
+    private fun setupLogout() {
         binding.btnLogout.setOnClickListener {
-            // Cerrar sesión en Firebase y SessionManager
             FirebaseAuth.getInstance().signOut()
             SessionManager.logout()
 

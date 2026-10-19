@@ -1,60 +1,143 @@
 package com.resuelveya.android.features.catalogo.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.resuelveya.android.R
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.resuelveya.android.databinding.FragmentProveedorDetalleBinding
+import com.resuelveya.android.features.catalogo.data.CatalogoRepository
+import com.resuelveya.android.features.catalogo.model.TecnicoDetalleResponse
+import com.resuelveya.android.features.catalogo.view.adapter.ServicioTarifaAdapter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ProveedorDetalleFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProveedorDetalleFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var _binding: FragmentProveedorDetalleBinding? = null
+    private val binding get() = _binding!!
+
+    private val repository = CatalogoRepository()
+    private lateinit var adapter: ServicioTarifaAdapter
+    private var proveedorId: Long = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            proveedorId = it.getLong("proveedorId", -1L)
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_proveedor_detalle, container, false)
+    ): View {
+        _binding = FragmentProveedorDetalleBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+        setupListeners()
+        loadDetalle()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = ServicioTarifaAdapter { servicio ->
+            Toast.makeText(
+                requireContext(),
+                "Servicio seleccionado: ${servicio.titulo}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        binding.rvServicios.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvServicios.adapter = adapter
+    }
+
+    private fun setupListeners() {
+        binding.btnSolicitar.setOnClickListener {
+            Toast.makeText(
+                requireContext(),
+                "Próximamente: Solicitar servicio con este técnico",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun loadDetalle() {
+        if (proveedorId <= 0) {
+            Toast.makeText(requireContext(), "ID de técnico no válido", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        binding.progress.visibility = View.VISIBLE
+
+        repository.getTecnicoCompleto(proveedorId, object : Callback<TecnicoDetalleResponse> {
+            override fun onResponse(
+                call: Call<TecnicoDetalleResponse>,
+                response: Response<TecnicoDetalleResponse>
+            ) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+
+                if (response.isSuccessful) {
+                    val detalle = response.body()
+                    if (detalle != null) {
+                        bindDetalle(detalle)
+                    }
+                    return
+                }
+
+                Toast.makeText(
+                    requireContext(),
+                    "No se pudo cargar el perfil del técnico (${response.code()})",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            override fun onFailure(call: Call<TecnicoDetalleResponse>, t: Throwable) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+                Toast.makeText(
+                    requireContext(),
+                    "Error de conexión al cargar perfil",
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.e(TAG, "Error al cargar detalle de técnico", t)
+            }
+        })
+    }
+
+    private fun bindDetalle(detalle: TecnicoDetalleResponse) {
+        binding.tvNombre.text = detalle.nombre
+        val especialidad = detalle.especialidadNombre ?: "Técnico Profesional"
+        val ubicacion = detalle.distrito ?: detalle.ciudad ?: "Lima"
+        binding.tvEspecialidad.text = "$especialidad · $ubicacion"
+
+        val rating = detalle.calificacionPromedio ?: 5.0
+        val reseniasCount = detalle.resenias.size
+        binding.tvCalificacion.text = "${String.format("%.1f", rating)} · $reseniasCount reseñas"
+
+        val presentacion = detalle.presentacion?.ifBlank { null }
+            ?: "Profesional certificado y verificado en ResuelveYa con experiencia garantizada."
+        binding.tvAcerca.text = presentacion
+
+        adapter.updateData(detalle.servicios)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProveedorDetalleFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ProveedorDetalleFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        private const val TAG = "ProveedorDetalleFragment"
     }
 }

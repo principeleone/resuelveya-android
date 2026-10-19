@@ -3,48 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_cliente"
-    app:startDestination="@id/homeFragment">
-
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.resuelveya.android.features.tecnicos.HomeFragment"
-        android:label="Inicio"
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_homeFragment_to_tecnicosFragment"
-            app:destination="@id/tecnicosFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_tecnicoDetalleFragment"
-            app:destination="@id/tecnicoDetalleFragment" />
-    </fragment>
+    app:startDestination="@id/inicioClienteFragment">
 
     <fragment
         android:id="@+id/inicioClienteFragment"
         android:name="com.resuelveya.android.features.catalogo.view.InicioClienteFragment"
-        android:label="Catálogo"
+        android:label="Inicio"
         tools:layout="@layout/fragment_inicio_cliente">
         <action
-            android:id="@+id/action_inicioClienteFragment_to_tecnicosFragment"
-            app:destination="@id/tecnicosFragment" />
+            android:id="@+id/action_inicioClienteFragment_to_proveedoresFragment"
+            app:destination="@id/proveedoresFragment" />
         <action
-            android:id="@+id/action_inicioClienteFragment_to_tecnicoDetalleFragment"
-            app:destination="@id/tecnicoDetalleFragment" />
+            android:id="@+id/action_inicioClienteFragment_to_proveedorDetalleFragment"
+            app:destination="@id/proveedorDetalleFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/tecnicosFragment"
-        android:name="com.resuelveya.android.features.tecnicos.TecnicosFragment"
+        android:id="@+id/proveedoresFragment"
+        android:name="com.resuelveya.android.features.catalogo.view.ProveedoresFragment"
         android:label="Técnicos"
-        tools:layout="@layout/fragment_tecnicos">
+        tools:layout="@layout/fragment_proveedores">
         <action
-            android:id="@+id/action_tecnicosFragment_to_tecnicoDetalleFragment"
-            app:destination="@id/tecnicoDetalleFragment" />
+            android:id="@+id/action_proveedoresFragment_to_proveedorDetalleFragment"
+            app:destination="@id/proveedorDetalleFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/tecnicoDetalleFragment"
-        android:name="com.resuelveya.android.features.tecnicos.TecnicoDetalleFragment"
+        android:id="@+id/proveedorDetalleFragment"
+        android:name="com.resuelveya.android.features.catalogo.view.ProveedorDetalleFragment"
         android:label="Detalle del Técnico"
-        tools:layout="@layout/fragment_tecnico_detalle" />
+        tools:layout="@layout/fragment_proveedor_detalle" />
+
+    <fragment
+        android:id="@+id/misContratacionesFragment"
+        android:name="com.resuelveya.android.features.contrataciones.view.MisContratacionesFragment"
+        android:label="Contratos"
+        tools:layout="@layout/fragment_mis_contrataciones" />
+
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.resuelveya.android.features.perfil.view.PerfilFragment"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_perfil" />
 
 </navigation>

@@ -41,9 +41,9 @@ class MainClienteActivity : AppCompatActivity() {
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.homeFragment,
                 R.id.inicioClienteFragment,
-                R.id.tecnicosFragment
+                R.id.misContratacionesFragment,
+                R.id.perfilFragment
             )
         )
 
