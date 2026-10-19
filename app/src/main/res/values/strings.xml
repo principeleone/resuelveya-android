@@ -18,6 +18,12 @@
     <string name="auth_telefono">Teléfono</string>
     <string name="auth_confirmar">Confirmar contraseña</string>
     <string name="auth_btn_registrar">REGISTRARME</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="auth_titulo_registro">Crear Cuenta</string>
+    <string name="auth_subtitulo_cliente">Regístrate para solicitar servicios técnicos</string>
+    <string name="auth_subtitulo_proveedor">Regístrate para ofrecer tus servicios como técnico</string>
+    <string name="auth_especialidad">Especialidad u Oficio</string>
+    <string name="auth_experiencia">Años de experiencia</string>
+    <string name="auth_presentacion">Breve descripción de tus servicios</string>
+    <string name="auth_ya_cuenta">¿Ya tienes una cuenta?</string>
+    <string name="auth_ir_login">Inicia sesión</string>
 </resources>
