@@ -7,20 +7,23 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.resuelveya.android.R
 import com.resuelveya.android.databinding.FragmentRegisterBinding
 
-class RegisterFragment : Fragment() {
+class RegisterFragment : Fragment(),View.OnClickListener {
 
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        auth= FirebaseAuth.getInstance()
         return binding.root
     }
 
@@ -28,6 +31,8 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupListeners()
+        binding.btnRegistrar.setOnClickListener (this)
+        binding.btnIrLogin.setOnClickListener (this)
     }
 
     private fun setupViews() {
@@ -42,20 +47,6 @@ class RegisterFragment : Fragment() {
             updateRoleView(isProvider)
         }
 
-        binding.btnIrLogin.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
-        binding.btnRegistrar.setOnClickListener {
-            val isProvider = binding.toggleRol.checkedButtonId == R.id.btnRolProveedor
-            val roleName = if (isProvider) "Proveedor" else "Cliente"
-            // Feedback temporal para validación visual de la pantalla
-            Toast.makeText(
-                requireContext(),
-                "Formulario de registro ($roleName) listo para integración",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
     }
 
     private fun updateRoleView(isProvider: Boolean) {
@@ -74,5 +65,29 @@ class RegisterFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun registerUser(email: String,password:String){
+        auth.createUserWithEmailAndPassword(email,password)
+            .addOnCompleteListener(requireActivity()){task ->
+                if (task.isSuccessful){
+                    Toast.makeText(requireContext(),"OK", Toast.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(requireContext(),"Error", Toast.LENGTH_LONG).show()
+                }
+            }
+    }
+
+    override fun onClick(v: View?) {
+        when(v){
+            binding.btnRegistrar->{
+                registerUser(binding.etCorreoReg.toString().trim(),
+                    binding.etPasswordReg.text.toString().trim()
+                )
+            }
+            binding.btnIrLogin->{
+                findNavController().popBackStack()
+            }
+        }
     }
 }
