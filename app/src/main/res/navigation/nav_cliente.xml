@@ -73,6 +73,11 @@
         <action
             android:id="@+id/action_misContratacionesFragment_to_seguimientoFragment"
             app:destination="@id/seguimientoFragment" />
+        <action
+            android:id="@+id/action_misContratacionesFragment_to_inicioClienteFragment"
+            app:destination="@id/inicioClienteFragment"
+            app:popUpTo="@id/inicioClienteFragment"
+            app:popUpToInclusive="false" />
     </fragment>
 
     <fragment

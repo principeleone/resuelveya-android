@@ -44,11 +44,52 @@ class MainClienteActivity : AppCompatActivity() {
         )
 
         binding.toolbarCliente.setupWithNavController(navController, appBarConfiguration)
-        binding.bottomNavigationCliente.setupWithNavController(navController)
+
+        binding.bottomNavigationCliente.setOnItemSelectedListener { item ->
+            if (item.itemId == navController.currentDestination?.id) {
+                return@setOnItemSelectedListener true
+            }
+
+            when (item.itemId) {
+                R.id.inicioClienteFragment -> {
+                    if (!navController.popBackStack(R.id.inicioClienteFragment, false)) {
+                        navController.navigate(R.id.inicioClienteFragment)
+                    }
+                    true
+                }
+                R.id.misContratacionesFragment -> {
+                    navController.navigate(
+                        R.id.misContratacionesFragment,
+                        null,
+                        androidx.navigation.NavOptions.Builder()
+                            .setPopUpTo(R.id.inicioClienteFragment, false)
+                            .setLaunchSingleTop(true)
+                            .build()
+                    )
+                    true
+                }
+                R.id.perfilFragment -> {
+                    navController.navigate(
+                        R.id.perfilFragment,
+                        null,
+                        androidx.navigation.NavOptions.Builder()
+                            .setPopUpTo(R.id.inicioClienteFragment, false)
+                            .setLaunchSingleTop(true)
+                            .build()
+                    )
+                    true
+                }
+                else -> false
+            }
+        }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id in setOf(R.id.inicioClienteFragment, R.id.misContratacionesFragment, R.id.perfilFragment)) {
                 binding.toolbarCliente.navigationIcon = null
+                val menuItem = binding.bottomNavigationCliente.menu.findItem(destination.id)
+                if (menuItem != null && !menuItem.isChecked) {
+                    menuItem.isChecked = true
+                }
             } else {
                 binding.toolbarCliente.setNavigationIcon(R.drawable.ic_arrow_back)
                 binding.toolbarCliente.setNavigationOnClickListener {

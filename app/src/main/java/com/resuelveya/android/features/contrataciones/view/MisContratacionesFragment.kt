@@ -44,7 +44,14 @@ class MisContratacionesFragment : Fragment() {
 
     private fun setupListeners() {
         binding.btnIrAInicio.setOnClickListener {
-            findNavController().navigate(R.id.inicioClienteFragment)
+            val bottomNav = activity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(
+                R.id.bottomNavigationCliente
+            )
+            if (bottomNav != null) {
+                bottomNav.selectedItemId = R.id.inicioClienteFragment
+            } else {
+                findNavController().popBackStack(R.id.inicioClienteFragment, false)
+            }
         }
     }
 

@@ -197,6 +197,14 @@ class NuevaSolicitudFragment : Fragment() {
     }
 
     private fun navigateToContratos() {
+        val bottomNav = activity?.findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(
+            R.id.bottomNavigationCliente
+        )
+        if (bottomNav != null) {
+            bottomNav.selectedItemId = R.id.misContratacionesFragment
+            return
+        }
+
         try {
             findNavController().navigate(R.id.action_nuevaSolicitudFragment_to_misContratacionesFragment)
         } catch (e: Exception) {
