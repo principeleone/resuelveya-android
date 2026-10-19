@@ -7,19 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.resuelveya.R
 import com.resuelveya.adapter.EspecialidadAdapter
 import com.resuelveya.databinding.FragmentHomeBinding
-import com.resuelveya.network.RetrofitClient
-import kotlinx.coroutines.launch
-import com.resuelveya.R
 import com.resuelveya.ui.tecnicos.TecnicosFragment
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    // Vive en la Activity: sobrevive a los replace() del menú inferior
+    private val viewModel: HomeViewModel by activityViewModels()
 
     private lateinit var adapter: EspecialidadAdapter
 
@@ -51,23 +52,21 @@ class HomeFragment : Fragment() {
         binding.rvEspecialidades.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvEspecialidades.adapter = adapter
 
-        cargarEspecialidades()
-    }
+        // Mostrar los datos cuando lleguen (o al instante si ya estaban guardados)
+        viewModel.especialidades.observe(viewLifecycleOwner) { lista ->
+            adapter.submitList(lista)
+        }
 
-    private fun cargarEspecialidades() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val lista = RetrofitClient.api.getEspecialidades()
-                adapter.submitList(lista)
-            } catch (e: Exception) {
-                Log.e("HomeFragment", "Error al cargar especialidades", e)
-                Toast.makeText(
-                    requireContext(),
-                    "No se pudo conectar con el servidor",
-                    Toast.LENGTH_LONG
-                ).show()
+        // Mostrar el error una sola vez
+        viewModel.error.observe(viewLifecycleOwner) { mensaje ->
+            if (mensaje != null) {
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_LONG).show()
+                viewModel.errorMostrado()
             }
         }
+
+        // Solo llama al servidor si todavía no hay datos
+        viewModel.cargarEspecialidades()
     }
 
     override fun onDestroyView() {

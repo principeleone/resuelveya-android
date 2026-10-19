@@ -59,6 +59,9 @@ class TecnicosFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvTitulo.text = categoriaNombre
+        binding.tvTitulo.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
 
         adapter = TecnicoAdapter { tecnico ->
             val fragment = TecnicoDetalleFragment.newInstance(tecnico.id, tecnico.nombre)
