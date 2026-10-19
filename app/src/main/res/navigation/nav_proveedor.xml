@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_proveedor"
+    app:startDestination="@id/inicioProveedorFragment">
+
+    <fragment
+        android:id="@+id/inicioProveedorFragment"
+        android:name="com.resuelveya.android.features.proveedor.view.InicioProveedorFragment"
+        android:label="@string/proveedor_menu_inicio"
+        tools:layout="@layout/fragment_inicio_proveedor" />
+
+    <fragment
+        android:id="@+id/solicitudesRecibidasFragment"
+        android:name="com.resuelveya.android.features.proveedor.view.SolicitudesRecibidasFragment"
+        android:label="@string/proveedor_menu_solicitudes"
+        tools:layout="@layout/fragment_solicitudes_recibidas" />
+
+    <fragment
+        android:id="@+id/misServiciosFragment"
+        android:name="com.resuelveya.android.features.proveedor.view.MisServiciosFragment"
+        android:label="@string/proveedor_menu_servicios"
+        tools:layout="@layout/fragment_mis_servicios" />
+
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.resuelveya.android.features.perfil.view.PerfilFragment"
+        android:label="@string/proveedor_menu_perfil"
+        tools:layout="@layout/fragment_perfil" />
+
+</navigation>
