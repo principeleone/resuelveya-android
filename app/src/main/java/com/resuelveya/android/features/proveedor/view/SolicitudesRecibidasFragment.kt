@@ -1,60 +1,160 @@
 package com.resuelveya.android.features.proveedor.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.resuelveya.android.R
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.resuelveya.android.databinding.FragmentSolicitudesRecibidasBinding
+import com.resuelveya.android.features.catalogo.model.SolicitudResponse
+import com.resuelveya.android.features.proveedor.adapter.SolicitudRecibidaAdapter
+import com.resuelveya.android.features.proveedor.data.ProveedorRepository
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SolicitudesRecibidasFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SolicitudesRecibidasFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentSolicitudesRecibidasBinding? = null
+    private val binding get() = _binding!!
+
+    private val repository = ProveedorRepository()
+    private lateinit var adapter: SolicitudRecibidaAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_solicitudes_recibidas, container, false)
+    ): View {
+        _binding = FragmentSolicitudesRecibidasBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+        loadSolicitudes()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = SolicitudRecibidaAdapter(
+            onItemClick = { solicitud ->
+                Toast.makeText(
+                    requireContext(),
+                    "${solicitud.clienteNombre ?: "Cliente"} - ${solicitud.estado ?: "PENDIENTE"}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            onAceptarClick = { solicitud ->
+                solicitud.id?.let { id -> aceptarSolicitud(id) }
+            },
+            onRechazarClick = { solicitud ->
+                solicitud.id?.let { id -> rechazarSolicitud(id) }
+            }
+        )
+
+        binding.rvSolicitudes.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvSolicitudes.adapter = adapter
+    }
+
+    private fun loadSolicitudes() {
+        binding.progress.visibility = View.VISIBLE
+        binding.rvSolicitudes.visibility = View.GONE
+        binding.ivIconoVacio.visibility = View.GONE
+        binding.tvVacioSolicitudes.visibility = View.GONE
+
+        repository.getSolicitudesTecnico(null, object : Callback<List<SolicitudResponse>> {
+            override fun onResponse(
+                call: Call<List<SolicitudResponse>>,
+                response: Response<List<SolicitudResponse>>
+            ) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+
+                if (response.isSuccessful) {
+                    val lista = response.body().orEmpty()
+                    if (lista.isNotEmpty()) {
+                        binding.rvSolicitudes.visibility = View.VISIBLE
+                        binding.ivIconoVacio.visibility = View.GONE
+                        binding.tvVacioSolicitudes.visibility = View.GONE
+                        adapter.updateData(lista)
+                    } else {
+                        showEmptyState()
+                    }
+                } else {
+                    showEmptyState()
+                }
+            }
+
+            override fun onFailure(call: Call<List<SolicitudResponse>>, t: Throwable) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+                showEmptyState()
+                Log.e(TAG, "Error cargando solicitudes recibidas", t)
+            }
+        })
+    }
+
+    private fun aceptarSolicitud(id: Long) {
+        binding.progress.visibility = View.VISIBLE
+        repository.aceptarSolicitud(id, object : Callback<SolicitudResponse> {
+            override fun onResponse(call: Call<SolicitudResponse>, response: Response<SolicitudResponse>) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Solicitud aceptada", Toast.LENGTH_SHORT).show()
+                    loadSolicitudes()
+                } else {
+                    Toast.makeText(requireContext(), "No se pudo aceptar la solicitud", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<SolicitudResponse>, t: Throwable) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+                Toast.makeText(requireContext(), "Error de red al aceptar", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun rechazarSolicitud(id: Long) {
+        binding.progress.visibility = View.VISIBLE
+        repository.rechazarSolicitud(id, object : Callback<SolicitudResponse> {
+            override fun onResponse(call: Call<SolicitudResponse>, response: Response<SolicitudResponse>) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Solicitud rechazada", Toast.LENGTH_SHORT).show()
+                    loadSolicitudes()
+                } else {
+                    Toast.makeText(requireContext(), "No se pudo rechazar la solicitud", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<SolicitudResponse>, t: Throwable) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+                Toast.makeText(requireContext(), "Error de red al rechazar", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun showEmptyState() {
+        binding.rvSolicitudes.visibility = View.GONE
+        binding.ivIconoVacio.visibility = View.VISIBLE
+        binding.tvVacioSolicitudes.visibility = View.VISIBLE
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SolicitudesRecibidasFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SolicitudesRecibidasFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        private const val TAG = "SolicitudesRecibidasFrag"
     }
 }

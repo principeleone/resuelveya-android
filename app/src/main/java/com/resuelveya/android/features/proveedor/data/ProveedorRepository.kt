@@ -25,4 +25,16 @@ class ProveedorRepository {
     fun getCategorias(callback: Callback<List<CategoriaResponse>>) {
         proveedorApi.getCategorias().enqueue(callback)
     }
+
+    fun getSolicitudesTecnico(estado: String? = null, callback: Callback<List<com.resuelveya.android.features.catalogo.model.SolicitudResponse>>) {
+        proveedorApi.getSolicitudesTecnico(estado).enqueue(callback)
+    }
+
+    fun aceptarSolicitud(id: Long, callback: Callback<com.resuelveya.android.features.catalogo.model.SolicitudResponse>) {
+        proveedorApi.aceptarSolicitud(id).enqueue(callback)
+    }
+
+    fun rechazarSolicitud(id: Long, callback: Callback<com.resuelveya.android.features.catalogo.model.SolicitudResponse>) {
+        proveedorApi.rechazarSolicitud(id).enqueue(callback)
+    }
 }

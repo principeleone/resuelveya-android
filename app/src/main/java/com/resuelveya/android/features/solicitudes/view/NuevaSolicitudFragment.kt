@@ -198,7 +198,7 @@ class NuevaSolicitudFragment : Fragment() {
 
     private fun navigateToContratos() {
         try {
-            findNavController().navigate(R.id.misContratacionesFragment)
+            findNavController().navigate(R.id.action_nuevaSolicitudFragment_to_misContratacionesFragment)
         } catch (e: Exception) {
             Log.e(TAG, "Error navegando a misContratacionesFragment", e)
         }

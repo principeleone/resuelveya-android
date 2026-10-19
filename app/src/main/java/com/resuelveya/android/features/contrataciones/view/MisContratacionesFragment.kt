@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.resuelveya.android.R
 import com.resuelveya.android.databinding.FragmentMisContratacionesBinding
 import com.resuelveya.android.features.catalogo.data.CatalogoRepository
 import com.resuelveya.android.features.catalogo.model.SolicitudResponse
@@ -48,11 +50,18 @@ class MisContratacionesFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = ContratoAdapter { solicitud ->
-            Toast.makeText(
-                requireContext(),
-                "${solicitud.servicioTitulo ?: "Servicio"} - Estado: ${solicitud.estado ?: "PENDIENTE"}",
-                Toast.LENGTH_SHORT
-            ).show()
+            val bundle = Bundle().apply {
+                putLong("solicitudId", solicitud.id ?: 0L)
+                putString("servicioTitulo", solicitud.servicioTitulo)
+                putString("tecnicoNombre", solicitud.tecnicoNombre)
+                putString("estado", solicitud.estado)
+                putString("fechaProgramada", solicitud.fechaProgramada)
+            }
+            try {
+                findNavController().navigate(R.id.action_misContratacionesFragment_to_seguimientoFragment, bundle)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error navegando a seguimiento", e)
+            }
         }
         binding.rvContrataciones.layoutManager = LinearLayoutManager(requireContext())
         binding.rvContrataciones.adapter = adapter

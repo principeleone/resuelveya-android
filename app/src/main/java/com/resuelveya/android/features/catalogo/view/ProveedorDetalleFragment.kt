@@ -78,7 +78,6 @@ class ProveedorDetalleFragment : Fragment() {
         setupBackButton()
         renderInitialData()
         setupRecyclerView()
-        setupListeners()
         loadDetalle()
     }
 
@@ -106,24 +105,10 @@ class ProveedorDetalleFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = ServicioTarifaAdapter { servicio ->
             servicioSeleccionado = servicio
-            navigateToNuevaSolicitud(servicio)
+            navigateToServicioDetalle(servicio)
         }
         binding.rvServicios.layoutManager = LinearLayoutManager(requireContext())
         binding.rvServicios.adapter = adapter
-    }
-
-    private fun setupListeners() {
-        binding.btnSolicitar.setOnClickListener {
-            val servicio = servicioSeleccionado
-                ?: serviciosDisponibles.firstOrNull()
-                ?: ServicioTarifaItem(
-                    id = 1L,
-                    titulo = "Servicio de $especialidadTecnico",
-                    precioEstimado = 80.0,
-                    tiempoEstimado = "2 horas"
-                )
-            navigateToNuevaSolicitud(servicio)
-        }
     }
 
     private fun loadDetalle() {
@@ -242,19 +227,23 @@ class ProveedorDetalleFragment : Fragment() {
         })
     }
 
-    private fun navigateToNuevaSolicitud(servicio: ServicioTarifaItem) {
+    private fun navigateToServicioDetalle(servicio: ServicioTarifaItem) {
         val bundle = Bundle().apply {
-            putLong("tecnicoId", if (proveedorId > 0) proveedorId else 1L)
-            putString("tecnicoNombre", nombreTecnico)
             putLong("servicioId", servicio.id ?: 1L)
             putString("servicioTitulo", servicio.titulo)
+            putString("servicioDescripcion", servicio.descripcion)
             putDouble("precioEstimado", servicio.precioEstimado ?: 80.0)
-            putString("distrito", distritoTecnico)
+            putString("tiempoEstimado", servicio.tiempoEstimado)
+            putLong("tecnicoId", if (proveedorId > 0) proveedorId else 1L)
+            putString("tecnicoNombre", nombreTecnico)
+            putString("tecnicoEspecialidad", especialidadTecnico)
+            putString("tecnicoDistrito", distritoTecnico)
+            putDouble("tecnicoCalificacion", calificacionTecnico)
         }
         try {
-            findNavController().navigate(R.id.nuevaSolicitudFragment, bundle)
+            findNavController().navigate(R.id.action_proveedorDetalleFragment_to_servicioDetalleFragment, bundle)
         } catch (e: Exception) {
-            Log.e(TAG, "Error navegando a nuevaSolicitudFragment", e)
+            Log.e(TAG, "Error navegando a servicioDetalleFragment", e)
         }
     }
 

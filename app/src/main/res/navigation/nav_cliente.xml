@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_inicioClienteFragment_to_proveedorDetalleFragment"
             app:destination="@id/proveedorDetalleFragment" />
+        <action
+            android:id="@+id/action_inicioClienteFragment_to_servicioDetalleFragment"
+            app:destination="@id/servicioDetalleFragment" />
     </fragment>
 
     <fragment
@@ -34,7 +37,20 @@
         android:label="Detalle del Técnico"
         tools:layout="@layout/fragment_proveedor_detalle">
         <action
+            android:id="@+id/action_proveedorDetalleFragment_to_servicioDetalleFragment"
+            app:destination="@id/servicioDetalleFragment" />
+        <action
             android:id="@+id/action_proveedorDetalleFragment_to_nuevaSolicitudFragment"
+            app:destination="@id/nuevaSolicitudFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/servicioDetalleFragment"
+        android:name="com.resuelveya.android.features.catalogo.view.ServicioDetalleFragment"
+        android:label="Detalle del Servicio"
+        tools:layout="@layout/fragment_servicio_detalle">
+        <action
+            android:id="@+id/action_servicioDetalleFragment_to_nuevaSolicitudFragment"
             app:destination="@id/nuevaSolicitudFragment" />
     </fragment>
 
@@ -53,7 +69,17 @@
         android:id="@+id/misContratacionesFragment"
         android:name="com.resuelveya.android.features.contrataciones.view.MisContratacionesFragment"
         android:label="Contratos"
-        tools:layout="@layout/fragment_mis_contrataciones" />
+        tools:layout="@layout/fragment_mis_contrataciones">
+        <action
+            android:id="@+id/action_misContratacionesFragment_to_seguimientoFragment"
+            app:destination="@id/seguimientoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/seguimientoFragment"
+        android:name="com.resuelveya.android.features.contrataciones.view.SeguimientoFragment"
+        android:label="Seguimiento de Solicitud"
+        tools:layout="@layout/fragment_seguimiento" />
 
     <fragment
         android:id="@+id/perfilFragment"

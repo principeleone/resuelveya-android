@@ -39,6 +39,10 @@
     <string name="proveedor_stat_finalizados">Finalizados</string>
     <string name="proveedor_stat_calificacion">Calificación</string>
     <string name="proveedor_ultimas">Últimas solicitudes</string>
+    <string name="proveedor_solicitudes_titulo">Solicitudes Recibidas</string>
+    <string name="proveedor_vacio_solicitudes">No tienes solicitudes pendientes o activas en este momento.</string>
+    <string name="proveedor_btn_aceptar">Aceptar</string>
+    <string name="proveedor_btn_rechazar">Rechazar</string>
 
     <!-- Servicios Proveedor -->
     <string name="proveedor_vacio_servicios">Aún no tienes servicios registrados.\nPulsa el botón + para agregar uno.</string>
@@ -92,6 +96,32 @@
     <string name="solicitudes_btn_reintentar">Reintentar</string>
     <string name="contrataciones_btn_item_chat">Chat</string>
     <string name="contrataciones_btn_item_finalizar">Finalizar</string>
+    <string name="contrataciones_linea">Línea de tiempo del servicio</string>
+    <string name="contrataciones_btn_chat">ABRIR CHAT</string>
+
+    <!-- Perfil Usuario y Técnico -->
+    <string name="perfil_lbl_correo">Correo electrónico</string>
+    <string name="perfil_lbl_telefono">Teléfono</string>
+    <string name="perfil_lbl_direccion">Dirección</string>
+    <string name="perfil_lbl_ciudad">Ciudad</string>
+    <string name="perfil_lbl_presentacion">Presentación profesional</string>
+    <string name="perfil_lbl_experiencia">Años de experiencia</string>
+    <string name="perfil_lbl_pagos">Métodos de cobro</string>
+    <string name="perfil_lbl_especialidad">Especialidad</string>
+    <string name="perfil_btn_editar">EDITAR PERFIL</string>
+    <string name="perfil_nombre">Nombre completo</string>
+    <string name="perfil_telefono_ed">Teléfono de contacto</string>
+    <string name="perfil_direccion_ed">Dirección</string>
+    <string name="perfil_ciudad_ed">Ciudad</string>
+    <string name="perfil_presentacion_ed">Breve descripción de tus servicios</string>
+    <string name="perfil_experiencia_ed">Años de experiencia</string>
+    <string name="perfil_yape_ed">Número Yape</string>
+    <string name="perfil_plin_ed">Número Plin</string>
+    <string name="perfil_titular_ed">Titular de cuenta / pago</string>
+    <string name="perfil_btn_guardar">GUARDAR CAMBIOS</string>
+    <string name="perfil_btn_cancelar">CANCELAR</string>
+    <string name="perfil_btn_cerrar">CERRAR SESIÓN</string>
+    <string name="perfil_actualizado_exito">Perfil actualizado con éxito</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -1,6 +1,5 @@
 package com.resuelveya.android.features.home.view
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -11,11 +10,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
-import com.google.firebase.auth.FirebaseAuth
 import com.resuelveya.android.R
-import com.resuelveya.android.core.session.SessionManager
 import com.resuelveya.android.databinding.ActivityMainClienteBinding
-import com.resuelveya.android.features.auth.view.AuthActivity
 
 class MainClienteActivity : AppCompatActivity() {
 
@@ -40,29 +36,28 @@ class MainClienteActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.inicioClienteFragment)
+            setOf(
+                R.id.inicioClienteFragment,
+                R.id.misContratacionesFragment,
+                R.id.perfilFragment
+            )
         )
 
         binding.toolbarCliente.setupWithNavController(navController, appBarConfiguration)
         binding.bottomNavigationCliente.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.inicioClienteFragment) {
+            if (destination.id in setOf(R.id.inicioClienteFragment, R.id.misContratacionesFragment, R.id.perfilFragment)) {
                 binding.toolbarCliente.navigationIcon = null
             } else {
                 binding.toolbarCliente.setNavigationIcon(R.drawable.ic_arrow_back)
                 binding.toolbarCliente.setNavigationOnClickListener {
-                    if (destination.id == R.id.misContratacionesFragment || destination.id == R.id.perfilFragment) {
-                        binding.bottomNavigationCliente.selectedItemId = R.id.inicioClienteFragment
-                    } else {
-                        navController.navigateUp()
-                    }
+                    navController.navigateUp()
                 }
             }
         }
 
         setupBackPressedHandler()
-        setupToolbarMenu()
     }
 
     private fun setupBackPressedHandler() {
@@ -82,30 +77,6 @@ class MainClienteActivity : AppCompatActivity() {
                 }
             }
         })
-    }
-
-    private fun setupToolbarMenu() {
-        binding.toolbarCliente.inflateMenu(R.menu.menu_toolbar_cliente)
-        binding.toolbarCliente.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.action_logout -> {
-                    performLogout()
-                    true
-                }
-                else -> false
-            }
-        }
-    }
-
-    private fun performLogout() {
-        FirebaseAuth.getInstance().signOut()
-        SessionManager.logout()
-
-        val intent = Intent(this, AuthActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        startActivity(intent)
-        finish()
     }
 
     override fun onSupportNavigateUp(): Boolean {

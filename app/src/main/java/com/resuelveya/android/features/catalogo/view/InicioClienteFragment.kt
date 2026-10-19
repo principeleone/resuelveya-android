@@ -256,7 +256,7 @@ class InicioClienteFragment : Fragment() {
             putDouble("calificacion", calificacion)
         }
         try {
-            findNavController().navigate(R.id.proveedorDetalleFragment, bundle)
+            findNavController().navigate(R.id.action_inicioClienteFragment_to_proveedorDetalleFragment, bundle)
         } catch (e: Exception) {
             Log.e(TAG, "Error navegando a proveedorDetalleFragment", e)
         }
