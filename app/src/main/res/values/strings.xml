@@ -24,6 +24,9 @@
     <string name="auth_especialidad">Especialidad u Oficio</string>
     <string name="auth_experiencia">Años de experiencia</string>
     <string name="auth_presentacion">Breve descripción de tus servicios</string>
+    <string name="auth_nombre_completo">Nombre completo</string>
+    <string name="auth_ciudad">Ciudad</string>
+    <string name="auth_direccion">Dirección</string>
     <string name="auth_ya_cuenta">¿Ya tienes una cuenta?</string>
     <string name="auth_ir_login">Inicia sesión</string>
 </resources>
