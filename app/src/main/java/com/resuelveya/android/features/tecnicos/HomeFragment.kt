@@ -1,4 +1,4 @@
-package com.resuelveya.ui.home
+package com.resuelveya.android.features.tecnicos
 
 import android.os.Bundle
 import android.util.Log
@@ -9,12 +9,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import com.resuelveya.adapter.EspecialidadAdapter
-import com.resuelveya.databinding.FragmentHomeBinding
-import com.resuelveya.network.RetrofitClient
+import com.resuelveya.android.features.tecnicos.adapter.EspecialidadAdapter
+import com.resuelveya.android.features.tecnicos.network.RetrofitClient
 import kotlinx.coroutines.launch
-import com.resuelveya.R
-import com.resuelveya.ui.tecnicos.TecnicosFragment
 
 class HomeFragment : Fragment() {
 

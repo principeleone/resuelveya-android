@@ -1,11 +1,11 @@
-package com.resuelveya.adapter
+package com.resuelveya.android.features.tecnicos.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.resuelveya.R
 import com.resuelveya.databinding.ItemEspecialidadBinding
-import com.resuelveya.model.Especialidad
+import com.resuelveya.android.features.tecnicos.model.Especialidad
 
 class EspecialidadAdapter(
     private val onClick: (Especialidad) -> Unit

@@ -1,5 +1,6 @@
-package com.resuelveya.ui.tecnicos
+package com.resuelveya.android.features.tecnicos
 
+import android.R
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,11 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
-import com.resuelveya.adapter.ServicioAdapter
+import com.resuelveya.android.features.tecnicos.adapter.ServicioAdapter
 import com.resuelveya.databinding.FragmentTecnicoDetalleBinding
-import com.resuelveya.model.LoginRequest
-import com.resuelveya.model.TecnicoCompleto
-import com.resuelveya.network.RetrofitClient
+import com.resuelveya.android.features.tecnicos.model.LoginRequest
+import com.resuelveya.android.features.tecnicos.model.TecnicoCompleto
+import com.resuelveya.android.features.tecnicos.network.RetrofitClient
 
 class TecnicoDetalleFragment : Fragment() {
 
@@ -117,8 +118,8 @@ class TecnicoDetalleFragment : Fragment() {
         Glide.with(binding.root)
             .load(t.fotoUrl)
             .circleCrop()
-            .placeholder(android.R.drawable.ic_menu_myplaces)
-            .error(android.R.drawable.ic_menu_myplaces)
+            .placeholder(R.drawable.ic_menu_myplaces)
+            .error(R.drawable.ic_menu_myplaces)
             .into(binding.ivFoto)
 
         val servicios = t.servicios.orEmpty().filter { it.activo != false }

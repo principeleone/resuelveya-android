@@ -1,4 +1,4 @@
-package com.resuelveya.ui.tecnicos
+package com.resuelveya.android.features.tecnicos
 
 import android.os.Bundle
 import android.util.Log
@@ -15,9 +15,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.resuelveya.adapter.TecnicoAdapter
+import com.resuelveya.android.features.tecnicos.adapter.TecnicoAdapter
 import com.resuelveya.databinding.FragmentTecnicosBinding
-import com.resuelveya.network.RetrofitClient
+import com.resuelveya.android.features.tecnicos.network.RetrofitClient
 import com.resuelveya.R
 
 class TecnicosFragment : Fragment() {

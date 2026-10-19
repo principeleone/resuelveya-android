@@ -1,4 +1,4 @@
-package com.resuelveya.model
+package com.resuelveya.android.features.tecnicos.model
 
 data class PageResponse<T>(
     val content: List<T>,

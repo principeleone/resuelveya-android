@@ -1,4 +1,4 @@
-package com.resuelveya.network
+package com.resuelveya.android.features.tecnicos.network
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

@@ -1,14 +1,14 @@
-package com.resuelveya.network
+package com.resuelveya.android.features.tecnicos.network
 
-import com.resuelveya.model.Especialidad
+import com.resuelveya.android.features.tecnicos.model.Especialidad
 import retrofit2.http.GET
-import com.resuelveya.model.PageResponse
-import com.resuelveya.model.Tecnico
+import com.resuelveya.android.features.tecnicos.model.PageResponse
+import com.resuelveya.android.features.tecnicos.model.Tecnico
 import retrofit2.Response
 import retrofit2.http.Query
-import com.resuelveya.model.LoginRequest
-import com.resuelveya.model.LoginResponse
-import com.resuelveya.model.TecnicoCompleto
+import com.resuelveya.android.features.tecnicos.model.LoginRequest
+import com.resuelveya.android.features.tecnicos.model.LoginResponse
+import com.resuelveya.android.features.tecnicos.model.TecnicoCompleto
 import retrofit2.http.Body
 import retrofit2.http.Path
 import retrofit2.http.POST
