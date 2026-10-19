@@ -4,6 +4,8 @@ import com.resuelveya.android.core.network.RetrofitClient
 import com.resuelveya.android.features.catalogo.model.Categoria
 import com.resuelveya.android.features.catalogo.model.PageResponse
 import com.resuelveya.android.features.catalogo.model.ServicioPublico
+import com.resuelveya.android.features.catalogo.model.SolicitudRequest
+import com.resuelveya.android.features.catalogo.model.SolicitudResponse
 import com.resuelveya.android.features.catalogo.model.TecnicoDetalleResponse
 import com.resuelveya.android.features.catalogo.model.TecnicoPublico
 import retrofit2.Callback
@@ -26,5 +28,13 @@ class CatalogoRepository {
 
     fun getTecnicoCompleto(id: Long, callback: Callback<TecnicoDetalleResponse>) {
         catalogoApi.getTecnicoCompleto(id).enqueue(callback)
+    }
+
+    fun crearSolicitud(request: SolicitudRequest, callback: Callback<SolicitudResponse>) {
+        catalogoApi.crearSolicitud(request).enqueue(callback)
+    }
+
+    fun getMisSolicitudes(callback: Callback<List<SolicitudResponse>>) {
+        catalogoApi.getMisSolicitudes().enqueue(callback)
     }
 }

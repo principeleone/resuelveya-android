@@ -3,10 +3,14 @@ package com.resuelveya.android.features.catalogo.data
 import com.resuelveya.android.features.catalogo.model.Categoria
 import com.resuelveya.android.features.catalogo.model.PageResponse
 import com.resuelveya.android.features.catalogo.model.ServicioPublico
+import com.resuelveya.android.features.catalogo.model.SolicitudRequest
+import com.resuelveya.android.features.catalogo.model.SolicitudResponse
 import com.resuelveya.android.features.catalogo.model.TecnicoDetalleResponse
 import com.resuelveya.android.features.catalogo.model.TecnicoPublico
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -31,4 +35,14 @@ interface CatalogoApi {
     fun getTecnicoCompleto(
         @Path("id") id: Long
     ): Call<TecnicoDetalleResponse>
+
+    @POST("api/v1/solicitudes")
+    fun crearSolicitud(
+        @Body request: SolicitudRequest
+    ): Call<SolicitudResponse>
+
+    @GET("api/v1/solicitudes/cliente")
+    fun getMisSolicitudes(
+        @Query("estado") estado: String? = null
+    ): Call<List<SolicitudResponse>>
 }

@@ -40,17 +40,48 @@ class MainClienteActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.inicioClienteFragment,
-                R.id.misContratacionesFragment,
-                R.id.perfilFragment
-            )
+            setOf(R.id.inicioClienteFragment)
         )
 
         binding.toolbarCliente.setupWithNavController(navController, appBarConfiguration)
         binding.bottomNavigationCliente.setupWithNavController(navController)
 
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.inicioClienteFragment) {
+                binding.toolbarCliente.navigationIcon = null
+            } else {
+                binding.toolbarCliente.setNavigationIcon(R.drawable.ic_arrow_back)
+                binding.toolbarCliente.setNavigationOnClickListener {
+                    if (destination.id == R.id.misContratacionesFragment || destination.id == R.id.perfilFragment) {
+                        binding.bottomNavigationCliente.selectedItemId = R.id.inicioClienteFragment
+                    } else {
+                        navController.navigateUp()
+                    }
+                }
+            }
+        }
+
+        setupBackPressedHandler()
         setupToolbarMenu()
+    }
+
+    private fun setupBackPressedHandler() {
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val currentId = navController.currentDestination?.id
+                if (currentId == R.id.misContratacionesFragment || currentId == R.id.perfilFragment) {
+                    binding.bottomNavigationCliente.selectedItemId = R.id.inicioClienteFragment
+                } else if (currentId != null && currentId != R.id.inicioClienteFragment) {
+                    if (!navController.navigateUp()) {
+                        binding.bottomNavigationCliente.selectedItemId = R.id.inicioClienteFragment
+                    }
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                    isEnabled = true
+                }
+            }
+        })
     }
 
     private fun setupToolbarMenu() {

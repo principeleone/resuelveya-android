@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 
 data class TecnicoDetalleResponse(
     @SerializedName("id")
-    val id: Long,
+    val id: Long? = null,
 
     @SerializedName("nombre")
-    val nombre: String,
+    val nombre: String? = null,
 
     @SerializedName("email")
     val email: String? = null,
@@ -52,30 +52,30 @@ data class TecnicoDetalleResponse(
     val especialidadNombre: String? = null,
 
     @SerializedName("servicios")
-    val servicios: List<ServicioTarifaItem> = emptyList(),
+    val servicios: List<ServicioTarifaItem>? = null,
 
     @SerializedName("resenias")
-    val resenias: List<ReseniaItem> = emptyList()
+    val resenias: List<ReseniaItem>? = null
 )
 
 data class ServicioTarifaItem(
     @SerializedName("id")
-    val id: Long,
+    val id: Long? = null,
 
     @SerializedName("titulo")
-    val titulo: String,
+    val titulo: String? = null,
 
     @SerializedName("descripcion")
     val descripcion: String? = null,
 
     @SerializedName("precioEstimado")
-    val precioEstimado: Double = 0.0,
+    val precioEstimado: Double? = null,
 
     @SerializedName("tiempoEstimado")
     val tiempoEstimado: String? = null,
 
     @SerializedName("activo")
-    val activo: Boolean = true,
+    val activo: Boolean? = true,
 
     @SerializedName("categoriaId")
     val categoriaId: Long? = null,
@@ -86,10 +86,10 @@ data class ServicioTarifaItem(
 
 data class ReseniaItem(
     @SerializedName("id")
-    val id: Long,
+    val id: Long? = null,
 
     @SerializedName("calificacion")
-    val calificacion: Int = 5,
+    val calificacion: Int? = 5,
 
     @SerializedName("comentario")
     val comentario: String? = null,

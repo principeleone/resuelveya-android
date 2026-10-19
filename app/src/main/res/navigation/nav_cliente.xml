@@ -32,7 +32,22 @@
         android:id="@+id/proveedorDetalleFragment"
         android:name="com.resuelveya.android.features.catalogo.view.ProveedorDetalleFragment"
         android:label="Detalle del Técnico"
-        tools:layout="@layout/fragment_proveedor_detalle" />
+        tools:layout="@layout/fragment_proveedor_detalle">
+        <action
+            android:id="@+id/action_proveedorDetalleFragment_to_nuevaSolicitudFragment"
+            app:destination="@id/nuevaSolicitudFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nuevaSolicitudFragment"
+        android:name="com.resuelveya.android.features.solicitudes.view.NuevaSolicitudFragment"
+        android:label="Nueva Solicitud"
+        tools:layout="@layout/fragment_nueva_solicitud">
+        <action
+            android:id="@+id/action_nuevaSolicitudFragment_to_misContratacionesFragment"
+            app:destination="@id/misContratacionesFragment"
+            app:popUpTo="@id/inicioClienteFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/misContratacionesFragment"

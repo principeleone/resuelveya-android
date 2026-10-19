@@ -73,6 +73,26 @@
     <string name="contrataciones_titulo">Mis Contratos</string>
     <string name="contrataciones_vacio">Aún no tienes servicios contratados.\nExplora categorías y solicita un servicio.</string>
 
+    <!-- Acciones Generales y Diálogos -->
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="procesando">Procesando...</string>
+    <string name="espera">Por favor espera un momento</string>
+
+    <!-- Solicitudes y Contrataciones -->
+    <string name="solicitudes_descripcion">Describe el problema o requerimiento</string>
+    <string name="solicitudes_fecha">Fecha de atención</string>
+    <string name="solicitudes_hora">Hora estimada</string>
+    <string name="solicitudes_direccion">Dirección de atención</string>
+    <string name="solicitudes_offline">Sin conexión: Tu solicitud se guardará localmente y se enviará al conectarte</string>
+    <string name="solicitudes_btn_enviar">ENVIAR SOLICITUD</string>
+    <string name="solicitudes_banner_pendientes">Tienes solicitudes pendientes de sincronización</string>
+    <string name="solicitudes_vacio">No tienes solicitudes pendientes</string>
+    <string name="solicitudes_btn_sincronizar">SINCRONIZAR AHORA</string>
+    <string name="solicitudes_btn_reintentar">Reintentar</string>
+    <string name="contrataciones_btn_item_chat">Chat</string>
+    <string name="contrataciones_btn_item_finalizar">Finalizar</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

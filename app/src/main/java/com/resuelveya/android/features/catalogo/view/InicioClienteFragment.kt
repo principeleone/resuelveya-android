@@ -76,7 +76,13 @@ class InicioClienteFragment : Fragment() {
         servicioAdapter = ServicioPublicoAdapter { servicio ->
             val tecnicoId = servicio.tecnicoId
             if (tecnicoId != null && tecnicoId > 0) {
-                navigateToProveedorDetalle(tecnicoId)
+                navigateToProveedorDetalle(
+                    tecnicoId = tecnicoId,
+                    nombre = servicio.tecnicoNombre,
+                    especialidad = servicio.categoriaNombre,
+                    distrito = servicio.tecnicoDistrito ?: servicio.tecnicoCiudad,
+                    calificacion = servicio.tecnicoCalificacionPromedio ?: 5.0
+                )
             } else {
                 Toast.makeText(requireContext(), "Técnico no disponible actualmente", Toast.LENGTH_SHORT).show()
             }
@@ -235,9 +241,19 @@ class InicioClienteFragment : Fragment() {
         }
     }
 
-    private fun navigateToProveedorDetalle(tecnicoId: Long) {
+    private fun navigateToProveedorDetalle(
+        tecnicoId: Long,
+        nombre: String? = null,
+        especialidad: String? = null,
+        distrito: String? = null,
+        calificacion: Double = 5.0
+    ) {
         val bundle = Bundle().apply {
             putLong("proveedorId", tecnicoId)
+            putString("nombre", nombre)
+            putString("especialidad", especialidad)
+            putString("distrito", distrito)
+            putDouble("calificacion", calificacion)
         }
         try {
             findNavController().navigate(R.id.proveedorDetalleFragment, bundle)

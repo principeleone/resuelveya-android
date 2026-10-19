@@ -56,6 +56,10 @@ class ProveedoresFragment : Fragment() {
     }
 
     private fun setupHeader() {
+        binding.btnBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         val title = if (!categoriaNombre.isNullOrBlank()) {
             "Técnicos en $categoriaNombre"
         } else {
@@ -66,7 +70,7 @@ class ProveedoresFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = ProveedorAdapter { tecnico ->
-            navigateToDetalle(tecnico.id)
+            navigateToDetalle(tecnico)
         }
         binding.rvProveedores.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProveedores.adapter = adapter
@@ -117,9 +121,15 @@ class ProveedoresFragment : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun navigateToDetalle(proveedorId: Long) {
+    private fun navigateToDetalle(tecnico: TecnicoPublico) {
         val bundle = Bundle().apply {
-            putLong("proveedorId", proveedorId)
+            putLong("proveedorId", tecnico.id)
+            putString("nombre", tecnico.nombre)
+            putString("especialidad", tecnico.especialidadNombre)
+            putString("distrito", tecnico.distrito ?: tecnico.ciudad)
+            putDouble("calificacion", tecnico.calificacionPromedio ?: 5.0)
+            putInt("totalResenias", tecnico.totalResenias ?: 0)
+            putString("presentacion", tecnico.presentacion)
         }
         try {
             findNavController().navigate(R.id.proveedorDetalleFragment, bundle)
