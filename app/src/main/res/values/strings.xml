@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">movil</string>
+    <string name="menu_home">Inicio</string>
+    <string name="menu_jobs">Trabajos</string>
+    <string name="menu_messages">Mensajes</string>
+    <string name="menu_profile">Perfil</string>
 </resources>
