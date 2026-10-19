@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "151218186505",
+    "project_id": "resuelveya-6b86e",
+    "storage_bucket": "resuelveya-6b86e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151218186505:android:dd9077f8e133073ca94bd8",
+        "android_client_info": {
+          "package_name": "com.resuelveya.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPcoDnj1PnbXGK36Outg0PdteLLcE92k8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

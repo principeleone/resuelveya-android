@@ -2,4 +2,26 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="primary">#1E5AA8</color>
+    <color name="primary_dark">#143F78</color>
+    <color name="primary_light">#E3EEFB</color>
+    <color name="accent">#F59E0B</color>
+    <color name="ok">#16A34A</color>
+    <color name="error">#DC2626</color>
+    <color name="bg_screen">#F4F6FA</color>
+    <color name="text_primary">#1F2937</color>
+    <color name="text_muted">#6B7280</color>
+    <color name="border">#E5E7EB</color>
+    <color name="outline">#9CA3AF</color>
+    <color name="ic_launcher_background">#1E5AA8</color>
+    <color name="chip_pen_bg">#FEF3C7</color>
+    <color name="chip_pen_tx">#92400E</color>
+    <color name="chip_ok_bg">#DCFCE7</color>
+    <color name="chip_ok_tx">#166534</color>
+    <color name="chip_er_bg">#FEE2E2</color>
+    <color name="chip_er_tx">#991B1B</color>
+    <color name="chip_pro_bg">#DBEAFE</color>
+    <color name="chip_pro_tx">#1E40AF</color>
+    <color name="chip_gr_bg">#E5E7EB</color>
+    <color name="chip_gr_tx">#374151</color>
 </resources>
