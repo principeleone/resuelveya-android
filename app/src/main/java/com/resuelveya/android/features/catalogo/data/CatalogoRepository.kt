@@ -22,6 +22,15 @@ class CatalogoRepository {
         catalogoApi.buscarServicios(query).enqueue(callback)
     }
 
+    fun getTecnicos(
+        categoriaId: Long? = null,
+        nombre: String? = null,
+        size: Int = 50,
+        callback: Callback<PageResponse<TecnicoPublico>>
+    ) {
+        catalogoApi.getTecnicos(categoriaId, nombre, size).enqueue(callback)
+    }
+
     fun getTecnicosPorCategoria(categoriaId: Long, callback: Callback<PageResponse<TecnicoPublico>>) {
         catalogoApi.getTecnicosPorCategoria(categoriaId).enqueue(callback)
     }

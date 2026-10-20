@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.resuelveya.android.R
+import com.resuelveya.android.core.database.ContratoSyncManager
 import com.resuelveya.android.databinding.FragmentMisContratacionesBinding
 import com.resuelveya.android.features.catalogo.data.CatalogoRepository
 import com.resuelveya.android.features.catalogo.model.SolicitudResponse
@@ -76,10 +77,25 @@ class MisContratacionesFragment : Fragment() {
 
     private fun loadSolicitudes() {
         binding.progress.visibility = View.VISIBLE
-        binding.rvContrataciones.visibility = View.GONE
-        binding.ivIconoVacio.visibility = View.GONE
-        binding.tvVacioContratos.visibility = View.GONE
-        binding.btnIrAInicio.visibility = View.GONE
+        val syncManager = ContratoSyncManager(requireContext())
+
+        // Cargar desde Room primero (offline-first)
+        syncManager.obtenerContratosLocales(esProveedor = false) { locales ->
+            if (_binding == null) return@obtenerContratosLocales
+            if (locales.isNotEmpty()) {
+                val respuestas = locales.map { it.toSolicitudResponse() }
+                binding.rvContrataciones.visibility = View.VISIBLE
+                binding.ivIconoVacio.visibility = View.GONE
+                binding.tvVacioContratos.visibility = View.GONE
+                binding.btnIrAInicio.visibility = View.GONE
+                adapter.updateData(respuestas)
+            }
+        }
+
+        if (!syncManager.isOnline()) {
+            binding.progress.visibility = View.GONE
+            return
+        }
 
         repository.getMisSolicitudes(object : Callback<List<SolicitudResponse>> {
             override fun onResponse(
@@ -97,22 +113,39 @@ class MisContratacionesFragment : Fragment() {
                         binding.tvVacioContratos.visibility = View.GONE
                         binding.btnIrAInicio.visibility = View.GONE
                         adapter.updateData(lista)
+                        syncManager.guardarContratosLocales(lista, esProveedor = false)
                     } else {
                         showEmptyState()
                     }
                     return
                 }
 
-                showEmptyState()
+                cargarSoloLocales(syncManager)
             }
 
             override fun onFailure(call: Call<List<SolicitudResponse>>, t: Throwable) {
                 if (_binding == null) return
                 binding.progress.visibility = View.GONE
-                showEmptyState()
+                cargarSoloLocales(syncManager)
                 Log.e(TAG, "Error cargando solicitudes del cliente", t)
             }
         })
+    }
+
+    private fun cargarSoloLocales(syncManager: ContratoSyncManager) {
+        syncManager.obtenerContratosLocales(esProveedor = false) { locales ->
+            if (_binding == null) return@obtenerContratosLocales
+            if (locales.isNotEmpty()) {
+                val respuestas = locales.map { it.toSolicitudResponse() }
+                binding.rvContrataciones.visibility = View.VISIBLE
+                binding.ivIconoVacio.visibility = View.GONE
+                binding.tvVacioContratos.visibility = View.GONE
+                binding.btnIrAInicio.visibility = View.GONE
+                adapter.updateData(respuestas)
+            } else {
+                showEmptyState()
+            }
+        }
     }
 
     private fun showEmptyState() {

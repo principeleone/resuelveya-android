@@ -54,9 +54,37 @@ class SeguimientoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        cargarDatosSeguimiento()
+    }
+
+    private fun cargarDatosSeguimiento() {
         renderResumen()
         setupTimeline()
         setupListeners()
+
+        if (solicitudId > 0) {
+            java.util.concurrent.Executors.newSingleThreadExecutor().execute {
+                try {
+                    val entity = com.resuelveya.android.core.database.AppDatabase.getInstance(requireContext())
+                        .contratoDao().getContratoById(solicitudId)
+                    if (entity != null) {
+                        servicioTitulo = entity.servicioTitulo ?: servicioTitulo
+                        tecnicoNombre = entity.tecnicoNombre ?: tecnicoNombre
+                        estado = entity.estado
+                        fechaProgramada = entity.fechaProgramada ?: fechaProgramada
+
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            if (_binding != null) {
+                                renderResumen()
+                                setupTimeline()
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    android.util.Log.e("SeguimientoFragment", "Error consultando contrato local", e)
+                }
+            }
+        }
     }
 
     private fun renderResumen() {

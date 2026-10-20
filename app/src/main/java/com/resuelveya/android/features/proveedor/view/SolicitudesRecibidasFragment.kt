@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.resuelveya.android.core.database.ContratoSyncManager
 import com.resuelveya.android.databinding.FragmentSolicitudesRecibidasBinding
 import com.resuelveya.android.features.catalogo.model.SolicitudResponse
 import com.resuelveya.android.features.proveedor.adapter.SolicitudRecibidaAdapter
@@ -22,6 +23,7 @@ class SolicitudesRecibidasFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val repository = ProveedorRepository()
+    private lateinit var syncManager: ContratoSyncManager
     private lateinit var adapter: SolicitudRecibidaAdapter
 
     override fun onCreateView(
@@ -36,6 +38,7 @@ class SolicitudesRecibidasFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        syncManager = ContratoSyncManager(requireContext())
         setupRecyclerView()
         loadSolicitudes()
     }
@@ -43,17 +46,21 @@ class SolicitudesRecibidasFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = SolicitudRecibidaAdapter(
             onItemClick = { solicitud ->
-                Toast.makeText(
-                    requireContext(),
-                    "${solicitud.clienteNombre ?: "Cliente"} - ${solicitud.estado ?: "PENDIENTE"}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val estado = solicitud.estado ?: "PENDIENTE"
+                val cliente = solicitud.clienteNombre ?: "Cliente"
+                Toast.makeText(requireContext(), "$cliente · $estado", Toast.LENGTH_SHORT).show()
             },
             onAceptarClick = { solicitud ->
                 solicitud.id?.let { id -> aceptarSolicitud(id) }
             },
             onRechazarClick = { solicitud ->
                 solicitud.id?.let { id -> rechazarSolicitud(id) }
+            },
+            onIniciarClick = { solicitud ->
+                solicitud.id?.let { id -> iniciarContrato(id) }
+            },
+            onFinalizarClick = { solicitud ->
+                solicitud.id?.let { id -> finalizarContrato(id) }
             }
         )
 
@@ -63,10 +70,41 @@ class SolicitudesRecibidasFragment : Fragment() {
 
     private fun loadSolicitudes() {
         binding.progress.visibility = View.VISIBLE
-        binding.rvSolicitudes.visibility = View.GONE
-        binding.ivIconoVacio.visibility = View.GONE
-        binding.tvVacioSolicitudes.visibility = View.GONE
 
+        // 1. Cargar inmediatamente desde Room (modo offline-first)
+        syncManager.obtenerContratosLocales(esProveedor = true) { locales ->
+            if (_binding == null) return@obtenerContratosLocales
+            if (locales.isNotEmpty()) {
+                val respuestas = locales.map { it.toSolicitudResponse() }
+                binding.rvSolicitudes.visibility = View.VISIBLE
+                binding.ivIconoVacio.visibility = View.GONE
+                binding.tvVacioSolicitudes.visibility = View.GONE
+                adapter.updateData(respuestas)
+            }
+        }
+
+        // 2. Si hay conexión, sincronizar pendientes y refrescar desde el backend
+        if (syncManager.isOnline()) {
+            syncManager.sincronizarPendientes { sincronizados ->
+                if (sincronizados > 0 && context != null) {
+                    Toast.makeText(requireContext(), "Se sincronizaron $sincronizados cambio(s) de estado", Toast.LENGTH_SHORT).show()
+                }
+                fetchRemoteSolicitudes()
+            }
+        } else {
+            binding.progress.visibility = View.GONE
+            syncManager.obtenerContratosLocales(esProveedor = true) { locales ->
+                if (_binding == null) return@obtenerContratosLocales
+                if (locales.isEmpty()) {
+                    showEmptyState()
+                } else {
+                    Toast.makeText(requireContext(), "Modo offline: mostrando datos guardados en el dispositivo", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun fetchRemoteSolicitudes() {
         repository.getSolicitudesTecnico(null, object : Callback<List<SolicitudResponse>> {
             override fun onResponse(
                 call: Call<List<SolicitudResponse>>,
@@ -82,21 +120,84 @@ class SolicitudesRecibidasFragment : Fragment() {
                         binding.ivIconoVacio.visibility = View.GONE
                         binding.tvVacioSolicitudes.visibility = View.GONE
                         adapter.updateData(lista)
+                        // Guardar en Room para acceso offline
+                        syncManager.guardarContratosLocales(lista, esProveedor = true)
                     } else {
                         showEmptyState()
                     }
                 } else {
-                    showEmptyState()
+                    cargarSoloLocales()
                 }
             }
 
             override fun onFailure(call: Call<List<SolicitudResponse>>, t: Throwable) {
                 if (_binding == null) return
                 binding.progress.visibility = View.GONE
-                showEmptyState()
-                Log.e(TAG, "Error cargando solicitudes recibidas", t)
+                cargarSoloLocales()
+                Log.e(TAG, "Error cargando solicitudes remotas", t)
             }
         })
+    }
+
+    private fun cargarSoloLocales() {
+        syncManager.obtenerContratosLocales(esProveedor = true) { locales ->
+            if (_binding == null) return@obtenerContratosLocales
+            if (locales.isNotEmpty()) {
+                val respuestas = locales.map { it.toSolicitudResponse() }
+                binding.rvSolicitudes.visibility = View.VISIBLE
+                binding.ivIconoVacio.visibility = View.GONE
+                binding.tvVacioSolicitudes.visibility = View.GONE
+                adapter.updateData(respuestas)
+            } else {
+                showEmptyState()
+            }
+        }
+    }
+
+    private fun iniciarContrato(id: Long) {
+        binding.progress.visibility = View.VISIBLE
+        syncManager.iniciarContratoLocal(
+            solicitudId = id,
+            onSuccess = { _ ->
+                if (_binding == null) return@iniciarContratoLocal
+                binding.progress.visibility = View.GONE
+                val mensaje = if (syncManager.isOnline()) {
+                    "Contrato iniciado con éxito"
+                } else {
+                    "Contrato iniciado (Guardado offline, se enviará al conectar)"
+                }
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show()
+                cargarSoloLocales()
+            },
+            onError = { err ->
+                if (_binding == null) return@iniciarContratoLocal
+                binding.progress.visibility = View.GONE
+                Toast.makeText(requireContext(), err, Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    private fun finalizarContrato(id: Long) {
+        binding.progress.visibility = View.VISIBLE
+        syncManager.finalizarContratoLocal(
+            solicitudId = id,
+            onSuccess = { _ ->
+                if (_binding == null) return@finalizarContratoLocal
+                binding.progress.visibility = View.GONE
+                val mensaje = if (syncManager.isOnline()) {
+                    "Contrato finalizado con éxito"
+                } else {
+                    "Contrato finalizado (Guardado offline, se enviará al conectar)"
+                }
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show()
+                cargarSoloLocales()
+            },
+            onError = { err ->
+                if (_binding == null) return@finalizarContratoLocal
+                binding.progress.visibility = View.GONE
+                Toast.makeText(requireContext(), err, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     private fun aceptarSolicitud(id: Long) {

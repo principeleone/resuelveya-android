@@ -26,6 +26,13 @@ interface CatalogoApi {
     ): Call<PageResponse<ServicioPublico>>
 
     @GET("api/v1/public/tecnicos")
+    fun getTecnicos(
+        @Query("categoriaId") categoriaId: Long? = null,
+        @Query("nombre") nombre: String? = null,
+        @Query("size") size: Int = 50
+    ): Call<PageResponse<TecnicoPublico>>
+
+    @GET("api/v1/public/tecnicos")
     fun getTecnicosPorCategoria(
         @Query("categoriaId") categoriaId: Long,
         @Query("size") size: Int = 30

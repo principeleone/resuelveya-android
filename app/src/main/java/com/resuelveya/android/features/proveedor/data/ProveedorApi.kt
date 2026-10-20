@@ -42,4 +42,9 @@ interface ProveedorApi {
     fun rechazarSolicitud(
         @Path("id") id: Long
     ): Call<com.resuelveya.android.features.catalogo.model.SolicitudResponse>
+
+    @retrofit2.http.PATCH("api/v1/solicitudes/{id}/completar")
+    fun completarSolicitud(
+        @Path("id") id: Long
+    ): Call<com.resuelveya.android.features.catalogo.model.SolicitudResponse>
 }
