@@ -1,6 +1,7 @@
 package com.resuelveya.android.features.auth.data
 
 import com.resuelveya.android.features.auth.model.AuthResponse
+import com.resuelveya.android.features.auth.model.FirebaseRegisterRequest
 import com.resuelveya.android.features.auth.model.LoginRequest
 import com.resuelveya.android.features.auth.model.RegisterRequest
 import com.resuelveya.android.features.auth.model.RegistroRequest
@@ -10,6 +11,11 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface AuthApi {
+
+    @POST("api/v1/auth/firebase-register")
+    fun firebaseRegister(
+        @Body request: FirebaseRegisterRequest
+    ): Call<RegistroResponse>
 
     @POST("api/v1/auth/registro")
     fun registrarUsuario(
@@ -25,4 +31,5 @@ interface AuthApi {
     fun firebaseLogin(
         @Body request: RegisterRequest
     ): Call<AuthResponse>
-}
+}
+

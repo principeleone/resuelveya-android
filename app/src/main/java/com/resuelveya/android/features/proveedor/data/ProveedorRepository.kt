@@ -38,6 +38,10 @@ class ProveedorRepository {
         proveedorApi.aceptarSolicitud(id).enqueue(callback)
     }
 
+    fun iniciarSolicitud(id: Long, callback: Callback<com.resuelveya.android.features.catalogo.model.SolicitudResponse>) {
+        proveedorApi.iniciarSolicitud(id).enqueue(callback)
+    }
+
     fun rechazarSolicitud(id: Long, callback: Callback<com.resuelveya.android.features.catalogo.model.SolicitudResponse>) {
         proveedorApi.rechazarSolicitud(id).enqueue(callback)
     }
@@ -45,4 +49,4 @@ class ProveedorRepository {
     fun completarSolicitud(id: Long, callback: Callback<com.resuelveya.android.features.catalogo.model.SolicitudResponse>) {
         proveedorApi.completarSolicitud(id).enqueue(callback)
     }
-}
+}

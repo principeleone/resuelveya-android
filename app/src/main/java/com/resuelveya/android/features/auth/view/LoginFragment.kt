@@ -82,7 +82,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     val request = RegisterRequest(
                         firebaseToken = token
                     )
-                    sendFirebaseLoginToBackend(request)
+                    sendFirebaseLoginToBackend(request, email, password)
                 }?.addOnFailureListener { e ->
                     Log.w(TAG, "Error obteniendo token Firebase, recurriendo a login directo", e)
                     loginBackendDirectly(email, password)
@@ -130,7 +130,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
         })
     }
 
-    private fun sendFirebaseLoginToBackend(request: RegisterRequest) {
+    private fun sendFirebaseLoginToBackend(request: RegisterRequest, email: String, password: String) {
         authRepository.registerFirebaseUser(request, object : Callback<AuthResponse> {
             override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
                 if (response.isSuccessful) {
@@ -150,25 +150,17 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     return
                 }
 
-                // Si el backend falla, cerrar sesión en Firebase para no dejar estado inconsistente
-                auth.signOut()
-                SessionManager.logout()
-
-                val errorBody = response.errorBody()?.string()
-                Log.e(TAG, "Fallo en backend login [${response.code()}] URL: ${call.request().url} - Body: $errorBody")
-                val errorMessage = parseErrorMessage(errorBody) ?: "Error del servidor (${response.code()}): $errorBody"
-                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+                Log.w(TAG, "firebase-login falló con código [${response.code()}]. Intentando fallback a api/v1/auth/login directo...")
+                loginBackendDirectly(email, password)
             }
 
             override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                auth.signOut()
-                SessionManager.logout()
-                Log.e(TAG, "Fallo de conexión en backend login", t)
-                val errorMsg = "Error de conexión: ${t.localizedMessage ?: "No se pudo contactar al servidor"}"
-                Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
+                Log.w(TAG, "Fallo de conexión en firebase-login. Intentando fallback a api/v1/auth/login directo...", t)
+                loginBackendDirectly(email, password)
             }
         })
     }
+
 
     private fun dispatchByRole(rol: String) {
         val destinationActivity = if (rol.equals("TECNICO", ignoreCase = true)) {

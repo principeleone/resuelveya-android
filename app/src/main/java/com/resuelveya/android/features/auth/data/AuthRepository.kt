@@ -13,6 +13,13 @@ class AuthRepository {
 
     private val authApi: AuthApi = RetrofitClient.createService(AuthApi::class.java)
 
+    fun firebaseRegister(
+        request: com.resuelveya.android.features.auth.model.FirebaseRegisterRequest,
+        callback: Callback<RegistroResponse>
+    ) {
+        authApi.firebaseRegister(request).enqueue(callback)
+    }
+
     fun registrarUsuario(
         request: RegistroRequest,
         callback: Callback<RegistroResponse>

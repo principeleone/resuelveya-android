@@ -105,10 +105,11 @@ class ContratoSyncManager(private val context: Context) {
     ) {
         executor.execute {
             val contrato = dao.getContratoById(solicitudId)
+            val syncStatus = if (isOnline()) "SYNCED" else "PENDING_INICIAR"
             val updated = if (contrato != null) {
                 contrato.copy(
                     estado = "EN_PROCESO",
-                    syncStatus = "SYNCED",
+                    syncStatus = syncStatus,
                     updatedAt = System.currentTimeMillis()
                 )
             } else {
@@ -126,11 +127,23 @@ class ContratoSyncManager(private val context: Context) {
                     precioAcordado = null,
                     estado = "EN_PROCESO",
                     esProveedor = true,
-                    syncStatus = "SYNCED",
+                    syncStatus = syncStatus,
                     updatedAt = System.currentTimeMillis()
                 )
             }
             dao.insert(updated)
+
+            if (isOnline()) {
+                try {
+                    val response = proveedorApi.iniciarSolicitud(solicitudId).execute()
+                    if (!response.isSuccessful) {
+                        dao.updateEstado(solicitudId, "EN_PROCESO", "PENDING_INICIAR")
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error de red al sincronizar inicio de contrato", e)
+                    dao.updateEstado(solicitudId, "EN_PROCESO", "PENDING_INICIAR")
+                }
+            }
 
             val finalEntity = dao.getContratoById(solicitudId) ?: updated
             mainHandler.post { onSuccess(finalEntity) }
@@ -188,7 +201,7 @@ class ContratoSyncManager(private val context: Context) {
                 try {
                     when (p.syncStatus) {
                         "PENDING_INICIAR" -> {
-                            val resp = proveedorApi.aceptarSolicitud(p.id).execute()
+                            val resp = proveedorApi.iniciarSolicitud(p.id).execute()
                             if (resp.isSuccessful) {
                                 dao.updateEstado(p.id, "EN_PROCESO", "SYNCED")
                                 sincronizados++
