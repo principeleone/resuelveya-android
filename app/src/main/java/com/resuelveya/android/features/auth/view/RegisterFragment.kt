@@ -16,7 +16,9 @@ import com.resuelveya.android.core.session.SessionManager
 import com.resuelveya.android.databinding.FragmentRegisterBinding
 import com.resuelveya.android.features.auth.data.AuthRepository
 import com.resuelveya.android.features.auth.model.AuthResponse
+import com.resuelveya.android.features.auth.model.FirebaseRegisterRequest
 import com.resuelveya.android.features.auth.model.RegisterRequest
+import com.resuelveya.android.features.auth.model.RegistroResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -99,6 +101,13 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         val isProvider = binding.toggleRol.checkedButtonId == R.id.btnRolProveedor
         val backendRole = if (isProvider) "TECNICO" else "CLIENTE"
 
+        Log.d(TAG, "==================================================")
+        Log.d(TAG, "[REGISTRO] 1. Inicio de registro")
+        Log.d(TAG, "[REGISTRO] Botón marcado: ${if (isProvider) "PROVEEDOR" else "CLIENTE"}")
+        Log.d(TAG, "[REGISTRO] Rol asignado: '$backendRole'")
+        Log.d(TAG, "[REGISTRO] Datos ingresados -> Nombre: '$name', Correo: '$email', Tel: '$phone', Ciudad: '$city', Dir: '$address'")
+        Log.d(TAG, "==================================================")
+
         registerUser(
             email = email,
             password = password,
@@ -119,63 +128,92 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         city: String,
         address: String
     ) {
+        binding.btnRegistrar.isEnabled = false
+        binding.btnRegistrar.text = "Registrando..."
+
+        Log.d(TAG, "[REGISTRO] 2. Creando usuario en Firebase Auth: $email ...")
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (!task.isSuccessful) {
-                    val errorMsg = task.exception?.localizedMessage ?: "Error al registrar usuario en Firebase"
+                    binding.btnRegistrar.isEnabled = true
+                    updateRoleView(role == "TECNICO")
+
+                    val ex = task.exception
+                    val errorMsg = ex?.localizedMessage ?: "Error al registrar usuario en Firebase"
+                    Log.e(TAG, "[REGISTRO] Falló Firebase Auth: $errorMsg", ex)
                     Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
                     return@addOnCompleteListener
                 }
 
                 val firebaseUser = task.result?.user
-                firebaseUser?.getIdToken(true)?.addOnSuccessListener { tokenResult ->
-                    val token = tokenResult.token.orEmpty()
-                    val request = RegisterRequest(
-                        firebaseToken = token,
-                        rol = role,
-                        nombre = name.ifBlank { null },
-                        telefono = phone.ifBlank { null },
-                        direccion = address.ifBlank { null },
-                        ciudad = city.ifBlank { null }
-                    )
+                val uid = firebaseUser?.uid
+                Log.i(TAG, "[REGISTRO] 3. Firebase Auth OK. UID: $uid")
 
-                    sendRegisterToBackend(request)
-                }?.addOnFailureListener { e ->
-                    Log.e(TAG, "Error obteniendo token de Firebase", e)
-                    Toast.makeText(
-                        requireContext(),
-                        "Error al obtener token de Firebase: ${e.localizedMessage}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+                val request = FirebaseRegisterRequest(
+                    nombre = name,
+                    correo = email,
+                    telefono = phone.ifBlank { null },
+                    direccion = address.ifBlank { null },
+                    ciudad = city.ifBlank { null },
+                    rol = role
+                )
+
+                val jsonPayload = Gson().toJson(request)
+                Log.d(TAG, "[REGISTRO] 4. Payload JSON para el backend (/api/v1/auth/firebase-register):\n$jsonPayload")
+
+                sendRegisterToBackend(request)
             }
     }
 
-    private fun sendRegisterToBackend(request: RegisterRequest) {
-        authRepository.registerFirebaseUser(request, object : Callback<AuthResponse> {
-            override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
-                if (response.isSuccessful) {
-                    val authResponse = response.body()
-                    authResponse?.token?.let { jwtToken ->
-                        SessionManager.getInstance().saveToken(jwtToken)
-                    }
-                    authResponse?.rol?.let { rol ->
-                        SessionManager.getInstance().saveRol(rol)
-                    }
+    private fun sendRegisterToBackend(request: FirebaseRegisterRequest) {
+        Log.d(TAG, "[REGISTRO] 5. Enviando petición POST a /api/v1/auth/firebase-register con rol: '${request.rol}'...")
 
-                    Toast.makeText(requireContext(), "Registro completado con éxito", Toast.LENGTH_LONG).show()
+        authRepository.firebaseRegister(request, object : Callback<RegistroResponse> {
+            override fun onResponse(call: Call<RegistroResponse>, response: Response<RegistroResponse>) {
+                binding.btnRegistrar.isEnabled = true
+                updateRoleView(request.rol == "TECNICO")
+
+                val code = response.code()
+                val url = call.request().url
+
+                if (response.isSuccessful) {
+                    val registroResponse = response.body()
+                    val responseJson = Gson().toJson(registroResponse)
+                    Log.i(TAG, "[REGISTRO] 6. ÉXITO en Backend [HTTP $code] URL: $url")
+                    Log.i(TAG, "[REGISTRO] Respuesta del servidor:\n$responseJson")
+
+                    Toast.makeText(requireContext(), "¡Registro completado con éxito! Ya puedes iniciar sesión.", Toast.LENGTH_LONG).show()
                     findNavController().popBackStack()
                     return
                 }
 
+                // Si falla el backend, eliminamos el usuario recién creado en Firebase para no dejar estado inconsistente
+                auth.currentUser?.delete()
+                auth.signOut()
+
                 val errorBody = response.errorBody()?.string()
-                Log.e(TAG, "Fallo en backend [${response.code()}] URL: ${call.request().url} - Body: $errorBody")
-                val errorMessage = parseErrorMessage(errorBody) ?: "Error del servidor (${response.code()}): $errorBody"
-                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+                Log.e(TAG, "==================================================")
+                Log.e(TAG, "[REGISTRO] 6. FALLO EN BACKEND [HTTP $code] URL: $url")
+                Log.e(TAG, "[REGISTRO] Rol enviado: '${request.rol}'")
+                Log.e(TAG, "[REGISTRO] Body de error completo:\n$errorBody")
+                Log.e(TAG, "==================================================")
+
+                val errorMessage = parseErrorMessage(errorBody) ?: "Error del servidor ($code)"
+                Toast.makeText(
+                    requireContext(),
+                    "Fallo backend [$code]: $errorMessage\n(Revisa Logcat tag: RegisterFragment)",
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
-            override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                Log.e(TAG, "Fallo de conexión con el backend", t)
+            override fun onFailure(call: Call<RegistroResponse>, t: Throwable) {
+                binding.btnRegistrar.isEnabled = true
+                updateRoleView(request.rol == "TECNICO")
+
+                auth.currentUser?.delete()
+                auth.signOut()
+
+                Log.e(TAG, "[REGISTRO] Fallo de conexión con el backend", t)
                 val errorMsg = "Error de conexión: ${t.localizedMessage ?: "No se pudo contactar al servidor"}"
                 Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
             }
