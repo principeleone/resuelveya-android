@@ -157,7 +157,11 @@ class InicioClienteFragment : Fragment() {
 
     private fun setupNearbyCard() {
         binding.cardCerca.setOnClickListener {
-            navigateToProveedores(-1L, "Todos los Técnicos")
+            try {
+                findNavController().navigate(R.id.action_inicioClienteFragment_to_mapFragment)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error navegando a mapFragment", e)
+            }
         }
     }
 

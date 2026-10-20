@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_inicioClienteFragment_to_servicioDetalleFragment"
             app:destination="@id/servicioDetalleFragment" />
+        <action
+            android:id="@+id/action_inicioClienteFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
 
     <fragment
@@ -91,5 +94,15 @@
         android:name="com.resuelveya.android.features.perfil.view.PerfilFragment"
         android:label="Perfil"
         tools:layout="@layout/fragment_perfil" />
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.resuelveya.android.features.mapa.MapFragment"
+        android:label="Servicios cerca de ti"
+        tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_mapFragment_to_proveedorDetalleFragment"
+            app:destination="@id/proveedorDetalleFragment" />
+    </fragment>
 
 </navigation>

@@ -1,13 +1,17 @@
 package com.resuelveya.android
 
 import android.app.Application
+import com.google.android.gms.maps.GoogleMap
+import com.resuelveya.android.core.database.AppDatabase
 import com.resuelveya.android.core.session.SessionManager
 
 class ResuelveYaApp : Application() {
 
+    private lateinit var map: GoogleMap
+
     override fun onCreate() {
         super.onCreate()
-        // Inicializa el gestor de sesión global con el contexto de la aplicación
         SessionManager.init(this)
+        AppDatabase.getInstance(this)
     }
 }

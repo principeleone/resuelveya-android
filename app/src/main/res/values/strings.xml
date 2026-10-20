@@ -123,6 +123,18 @@
     <string name="perfil_btn_cerrar">CERRAR SESIÓN</string>
     <string name="perfil_actualizado_exito">Perfil actualizado con éxito</string>
 
+    <!-- Mapa de Servicios Cercanos -->
+    <string name="mapa_buscar_zona">Buscar por zona o distrito...</string>
+    <string name="mapa_chip_todos">Todos</string>
+    <string name="mapa_chip_electricidad">Electricidad</string>
+    <string name="mapa_chip_gasfiteria">Gasfitería</string>
+    <string name="mapa_chip_pintura">Pintura</string>
+    <string name="mapa_chip_carpinteria">Carpintería</string>
+    <string name="mapa_chip_refrigeracion">Refrigeración</string>
+    <string name="mapa_chip_computacion">Computación</string>
+    <string name="mapa_cd_mi_ubicacion">Centrar en mi ubicación</string>
+    <string name="mapa_btn_ver_perfil">VER PERFIL</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

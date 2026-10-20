@@ -2,6 +2,7 @@ package com.resuelveya.android.features.auth.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -118,13 +119,15 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 SessionManager.logout()
 
                 val errorBody = response.errorBody()?.string()
-                val errorMessage = parseErrorMessage(errorBody) ?: "Error del servidor (${response.code()})"
+                Log.e(TAG, "Fallo en backend login [${response.code()}] URL: ${call.request().url} - Body: $errorBody")
+                val errorMessage = parseErrorMessage(errorBody) ?: "Error del servidor (${response.code()}): $errorBody"
                 Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
             }
 
             override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
                 auth.signOut()
                 SessionManager.logout()
+                Log.e(TAG, "Fallo de conexión en backend login", t)
                 val errorMsg = "Error de conexión: ${t.localizedMessage ?: "No se pudo contactar al servidor"}"
                 Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
             }
@@ -158,5 +161,9 @@ class LoginFragment : Fragment(), View.OnClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val TAG = "LoginFragment"
     }
 }
