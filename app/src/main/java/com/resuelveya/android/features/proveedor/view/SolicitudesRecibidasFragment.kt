@@ -6,11 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.resuelveya.android.R
 import com.resuelveya.android.core.database.ContratoSyncManager
 import com.resuelveya.android.databinding.FragmentSolicitudesRecibidasBinding
 import com.resuelveya.android.features.catalogo.model.SolicitudResponse
@@ -43,17 +40,27 @@ class SolicitudesRecibidasFragment : Fragment() {
 
         syncManager = ContratoSyncManager(requireContext())
         setupRecyclerView()
-    }
-
-    override fun onResume() {
-        super.onResume()
         loadSolicitudes()
     }
 
     private fun setupRecyclerView() {
         adapter = SolicitudRecibidaAdapter(
             onItemClick = { solicitud ->
-                navigateToDetalle(solicitud)
+                val estado = solicitud.estado ?: "PENDIENTE"
+                val cliente = solicitud.clienteNombre ?: "Cliente"
+                Toast.makeText(requireContext(), "$cliente · $estado", Toast.LENGTH_SHORT).show()
+            },
+            onAceptarClick = { solicitud ->
+                solicitud.id?.let { id -> aceptarSolicitud(id) }
+            },
+            onRechazarClick = { solicitud ->
+                solicitud.id?.let { id -> rechazarSolicitud(id) }
+            },
+            onIniciarClick = { solicitud ->
+                solicitud.id?.let { id -> iniciarContrato(id) }
+            },
+            onFinalizarClick = { solicitud ->
+                solicitud.id?.let { id -> finalizarContrato(id) }
             }
         )
 
@@ -112,10 +119,9 @@ class SolicitudesRecibidasFragment : Fragment() {
                         binding.rvSolicitudes.visibility = View.VISIBLE
                         binding.ivIconoVacio.visibility = View.GONE
                         binding.tvVacioSolicitudes.visibility = View.GONE
-                        // Guardar en Room para acceso offline respetando estados locales
-                        syncManager.guardarContratosLocales(lista, esProveedor = true) {
-                            cargarSoloLocales()
-                        }
+                        adapter.updateData(lista)
+                        // Guardar en Room para acceso offline
+                        syncManager.guardarContratosLocales(lista, esProveedor = true)
                     } else {
                         showEmptyState()
                     }
@@ -148,6 +154,96 @@ class SolicitudesRecibidasFragment : Fragment() {
         }
     }
 
+    private fun iniciarContrato(id: Long) {
+        binding.progress.visibility = View.VISIBLE
+        syncManager.iniciarContratoLocal(
+            solicitudId = id,
+            onSuccess = { _ ->
+                if (_binding == null) return@iniciarContratoLocal
+                binding.progress.visibility = View.GONE
+                val mensaje = if (syncManager.isOnline()) {
+                    "Contrato iniciado con éxito"
+                } else {
+                    "Contrato iniciado (Guardado offline, se enviará al conectar)"
+                }
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show()
+                cargarSoloLocales()
+            },
+            onError = { err ->
+                if (_binding == null) return@iniciarContratoLocal
+                binding.progress.visibility = View.GONE
+                Toast.makeText(requireContext(), err, Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    private fun finalizarContrato(id: Long) {
+        binding.progress.visibility = View.VISIBLE
+        syncManager.finalizarContratoLocal(
+            solicitudId = id,
+            onSuccess = { _ ->
+                if (_binding == null) return@finalizarContratoLocal
+                binding.progress.visibility = View.GONE
+                val mensaje = if (syncManager.isOnline()) {
+                    "Contrato finalizado con éxito"
+                } else {
+                    "Contrato finalizado (Guardado offline, se enviará al conectar)"
+                }
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show()
+                cargarSoloLocales()
+            },
+            onError = { err ->
+                if (_binding == null) return@finalizarContratoLocal
+                binding.progress.visibility = View.GONE
+                Toast.makeText(requireContext(), err, Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    private fun aceptarSolicitud(id: Long) {
+        binding.progress.visibility = View.VISIBLE
+        repository.aceptarSolicitud(id, object : Callback<SolicitudResponse> {
+            override fun onResponse(call: Call<SolicitudResponse>, response: Response<SolicitudResponse>) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Solicitud aceptada", Toast.LENGTH_SHORT).show()
+                    loadSolicitudes()
+                } else {
+                    Toast.makeText(requireContext(), "No se pudo aceptar la solicitud", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<SolicitudResponse>, t: Throwable) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+                Toast.makeText(requireContext(), "Error de red al aceptar", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun rechazarSolicitud(id: Long) {
+        binding.progress.visibility = View.VISIBLE
+        repository.rechazarSolicitud(id, object : Callback<SolicitudResponse> {
+            override fun onResponse(call: Call<SolicitudResponse>, response: Response<SolicitudResponse>) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+                if (response.isSuccessful) {
+                    Toast.makeText(requireContext(), "Solicitud rechazada", Toast.LENGTH_SHORT).show()
+                    loadSolicitudes()
+                } else {
+                    Toast.makeText(requireContext(), "No se pudo rechazar la solicitud", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<SolicitudResponse>, t: Throwable) {
+                if (_binding == null) return
+                binding.progress.visibility = View.GONE
+                Toast.makeText(requireContext(), "Error de red al rechazar", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     private fun showEmptyState() {
         binding.rvSolicitudes.visibility = View.GONE
         binding.ivIconoVacio.visibility = View.VISIBLE
@@ -157,23 +253,6 @@ class SolicitudesRecibidasFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun navigateToDetalle(solicitud: SolicitudResponse) {
-        val bundle = bundleOf(
-            "solicitudId" to (solicitud.id ?: -1L),
-            "clienteNombre" to (solicitud.clienteNombre ?: ""),
-            "servicioTitulo" to (solicitud.servicioTitulo ?: solicitud.descripcion ?: ""),
-            "descripcion" to (solicitud.descripcion ?: ""),
-            "fechaProgramada" to (solicitud.fechaProgramada ?: ""),
-            "direccionAtencion" to (solicitud.direccionAtencion ?: ""),
-            "precioAcordado" to (solicitud.precioAcordado?.toFloat() ?: 0f),
-            "estado" to (solicitud.estado ?: "ACEPTADA")
-        )
-        findNavController().navigate(
-            R.id.action_solicitudes_to_detalle,
-            bundle
-        )
     }
 
     companion object {

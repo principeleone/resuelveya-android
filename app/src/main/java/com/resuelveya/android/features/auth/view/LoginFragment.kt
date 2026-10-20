@@ -17,7 +17,6 @@ import com.resuelveya.android.core.session.SessionManager
 import com.resuelveya.android.databinding.FragmentLoginBinding
 import com.resuelveya.android.features.auth.data.AuthRepository
 import com.resuelveya.android.features.auth.model.AuthResponse
-import com.resuelveya.android.features.auth.model.LoginRequest
 import com.resuelveya.android.features.auth.model.RegisterRequest
 import com.resuelveya.android.features.home.view.MainClienteActivity
 import com.resuelveya.android.features.home.view.MainProveedorActivity
@@ -71,8 +70,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (!task.isSuccessful) {
-                    Log.w(TAG, "Fallo login Firebase, intentando login directo con backend: ${task.exception?.localizedMessage}")
-                    loginBackendDirectly(email, password)
+                    val errorMsg = task.exception?.localizedMessage ?: "Error al iniciar sesión"
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
                     return@addOnCompleteListener
                 }
 
@@ -82,55 +81,20 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     val request = RegisterRequest(
                         firebaseToken = token
                     )
-                    sendFirebaseLoginToBackend(request, email, password)
+                    sendFirebaseLoginToBackend(request)
                 }?.addOnFailureListener { e ->
-                    Log.w(TAG, "Error obteniendo token Firebase, recurriendo a login directo", e)
-                    loginBackendDirectly(email, password)
+                    auth.signOut()
+                    SessionManager.logout()
+                    Toast.makeText(
+                        requireContext(),
+                        "Error al obtener token de Firebase: ${e.localizedMessage}",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
     }
 
-    private fun loginBackendDirectly(email: String, password: String) {
-        val request = LoginRequest(email = email, password = password)
-        authRepository.login(request, object : Callback<AuthResponse> {
-            override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
-                if (response.isSuccessful) {
-                    val authResponse = response.body()
-                    val jwtToken = authResponse?.token.orEmpty()
-                    val rol = authResponse?.rol.orEmpty()
-
-                    if (jwtToken.isNotEmpty()) {
-                        SessionManager.getInstance().saveToken(jwtToken)
-                    }
-                    if (rol.isNotEmpty()) {
-                        SessionManager.getInstance().saveRol(rol)
-                    }
-
-                    Toast.makeText(requireContext(), "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                    dispatchByRole(rol)
-                    return
-                }
-
-                auth.signOut()
-                SessionManager.logout()
-
-                val errorBody = response.errorBody()?.string()
-                Log.e(TAG, "Fallo en backend direct login [${response.code()}] URL: ${call.request().url} - Body: $errorBody")
-                val errorMessage = parseErrorMessage(errorBody) ?: "Error al iniciar sesión (${response.code()}): $errorBody"
-                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
-            }
-
-            override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                auth.signOut()
-                SessionManager.logout()
-                Log.e(TAG, "Fallo de conexión en direct login", t)
-                val errorMsg = "Error de conexión: ${t.localizedMessage ?: "No se pudo contactar al servidor"}"
-                Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
-            }
-        })
-    }
-
-    private fun sendFirebaseLoginToBackend(request: RegisterRequest, email: String, password: String) {
+    private fun sendFirebaseLoginToBackend(request: RegisterRequest) {
         authRepository.registerFirebaseUser(request, object : Callback<AuthResponse> {
             override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
                 if (response.isSuccessful) {
@@ -150,17 +114,25 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     return
                 }
 
-                Log.w(TAG, "firebase-login falló con código [${response.code()}]. Intentando fallback a api/v1/auth/login directo...")
-                loginBackendDirectly(email, password)
+                // Si el backend falla, cerrar sesión en Firebase para no dejar estado inconsistente
+                auth.signOut()
+                SessionManager.logout()
+
+                val errorBody = response.errorBody()?.string()
+                Log.e(TAG, "Fallo en backend login [${response.code()}] URL: ${call.request().url} - Body: $errorBody")
+                val errorMessage = parseErrorMessage(errorBody) ?: "Error del servidor (${response.code()}): $errorBody"
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
             }
 
             override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                Log.w(TAG, "Fallo de conexión en firebase-login. Intentando fallback a api/v1/auth/login directo...", t)
-                loginBackendDirectly(email, password)
+                auth.signOut()
+                SessionManager.logout()
+                Log.e(TAG, "Fallo de conexión en backend login", t)
+                val errorMsg = "Error de conexión: ${t.localizedMessage ?: "No se pudo contactar al servidor"}"
+                Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
             }
         })
     }
-
 
     private fun dispatchByRole(rol: String) {
         val destinationActivity = if (rol.equals("TECNICO", ignoreCase = true)) {
