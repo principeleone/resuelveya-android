@@ -1,6 +1,7 @@
 package com.resuelveya.android.features.auth.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -132,14 +133,15 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                     val request = RegisterRequest(
                         firebaseToken = token,
                         rol = role,
-                        nombre = name,
-                        telefono = phone,
-                        direccion = address,
-                        ciudad = city
+                        nombre = name.ifBlank { null },
+                        telefono = phone.ifBlank { null },
+                        direccion = address.ifBlank { null },
+                        ciudad = city.ifBlank { null }
                     )
 
                     sendRegisterToBackend(request)
                 }?.addOnFailureListener { e ->
+                    Log.e(TAG, "Error obteniendo token de Firebase", e)
                     Toast.makeText(
                         requireContext(),
                         "Error al obtener token de Firebase: ${e.localizedMessage}",
@@ -167,11 +169,13 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 }
 
                 val errorBody = response.errorBody()?.string()
-                val errorMessage = parseErrorMessage(errorBody) ?: "Error del servidor (${response.code()})"
+                Log.e(TAG, "Fallo en backend [${response.code()}] URL: ${call.request().url} - Body: $errorBody")
+                val errorMessage = parseErrorMessage(errorBody) ?: "Error del servidor (${response.code()}): $errorBody"
                 Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
             }
 
             override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                Log.e(TAG, "Fallo de conexión con el backend", t)
                 val errorMsg = "Error de conexión: ${t.localizedMessage ?: "No se pudo contactar al servidor"}"
                 Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
             }
@@ -191,5 +195,9 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val TAG = "RegisterFragment"
     }
 }

@@ -37,4 +37,8 @@ class ProveedorRepository {
     fun rechazarSolicitud(id: Long, callback: Callback<com.resuelveya.android.features.catalogo.model.SolicitudResponse>) {
         proveedorApi.rechazarSolicitud(id).enqueue(callback)
     }
+
+    fun completarSolicitud(id: Long, callback: Callback<com.resuelveya.android.features.catalogo.model.SolicitudResponse>) {
+        proveedorApi.completarSolicitud(id).enqueue(callback)
+    }
 }

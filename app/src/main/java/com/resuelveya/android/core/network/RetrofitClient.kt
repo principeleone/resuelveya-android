@@ -6,6 +6,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
+    // Para emulador Android apuntando a tu backend local de Spring Boot: "http://10.0.2.2:8080/"
+    // Para servidor de producción en Railway: "https://resuelveya-backend-production.up.railway.app/"
     private const val BASE_URL = "https://resuelveya-backend-production.up.railway.app/"
 
     private val okHttpClient: OkHttpClient by lazy {

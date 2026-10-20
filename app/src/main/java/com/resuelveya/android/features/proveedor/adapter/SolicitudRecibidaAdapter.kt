@@ -13,7 +13,9 @@ class SolicitudRecibidaAdapter(
     private var solicitudes: List<SolicitudResponse> = emptyList(),
     private val onItemClick: ((SolicitudResponse) -> Unit)? = null,
     private val onAceptarClick: ((SolicitudResponse) -> Unit)? = null,
-    private val onRechazarClick: ((SolicitudResponse) -> Unit)? = null
+    private val onRechazarClick: ((SolicitudResponse) -> Unit)? = null,
+    private val onIniciarClick: ((SolicitudResponse) -> Unit)? = null,
+    private val onFinalizarClick: ((SolicitudResponse) -> Unit)? = null
 ) : RecyclerView.Adapter<SolicitudRecibidaAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemSolicitudRecibidaBinding) :
@@ -37,20 +39,7 @@ class SolicitudRecibidaAdapter(
             }
 
             val estado = solicitud.estado ?: "PENDIENTE"
-            binding.tvEstado.text = estado
-
-            val isPendiente = estado.equals("PENDIENTE", ignoreCase = true)
-            if (isPendiente && (onAceptarClick != null || onRechazarClick != null)) {
-                binding.llAcciones.visibility = View.VISIBLE
-                binding.btnAceptar.setOnClickListener {
-                    onAceptarClick?.invoke(solicitud)
-                }
-                binding.btnRechazar.setOnClickListener {
-                    onRechazarClick?.invoke(solicitud)
-                }
-            } else {
-                binding.llAcciones.visibility = View.GONE
-            }
+            binding.tvEstado.text = estado.replace("_", " ")
 
             when (estado.uppercase()) {
                 "PENDIENTE" -> {
@@ -58,24 +47,61 @@ class SolicitudRecibidaAdapter(
                     binding.tvEstado.setTextColor(
                         ContextCompat.getColor(binding.root.context, R.color.chip_pen_tx)
                     )
+                    if (onAceptarClick != null || onRechazarClick != null) {
+                        binding.llAcciones.visibility = View.VISIBLE
+                        binding.btnRechazar.visibility = View.VISIBLE
+                        binding.btnRechazar.text = binding.root.context.getString(R.string.proveedor_btn_rechazar)
+                        binding.btnAceptar.visibility = View.VISIBLE
+                        binding.btnAceptar.text = binding.root.context.getString(R.string.proveedor_btn_aceptar)
+                        binding.btnAceptar.setOnClickListener { onAceptarClick?.invoke(solicitud) }
+                        binding.btnRechazar.setOnClickListener { onRechazarClick?.invoke(solicitud) }
+                    } else {
+                        binding.llAcciones.visibility = View.GONE
+                    }
                 }
-                "EN_PROCESO", "ACEPTADA" -> {
+                "ACEPTADA" -> {
                     binding.tvEstado.setBackgroundResource(R.drawable.bg_chip_pro)
                     binding.tvEstado.setTextColor(
                         ContextCompat.getColor(binding.root.context, R.color.chip_pro_tx)
                     )
+                    if (onIniciarClick != null) {
+                        binding.llAcciones.visibility = View.VISIBLE
+                        binding.btnRechazar.visibility = View.GONE
+                        binding.btnAceptar.visibility = View.VISIBLE
+                        binding.btnAceptar.text = "INICIAR CONTRATO"
+                        binding.btnAceptar.setOnClickListener { onIniciarClick.invoke(solicitud) }
+                    } else {
+                        binding.llAcciones.visibility = View.GONE
+                    }
+                }
+                "EN_PROCESO" -> {
+                    binding.tvEstado.setBackgroundResource(R.drawable.bg_chip_pro)
+                    binding.tvEstado.setTextColor(
+                        ContextCompat.getColor(binding.root.context, R.color.chip_pro_tx)
+                    )
+                    if (onFinalizarClick != null) {
+                        binding.llAcciones.visibility = View.VISIBLE
+                        binding.btnRechazar.visibility = View.GONE
+                        binding.btnAceptar.visibility = View.VISIBLE
+                        binding.btnAceptar.text = "FINALIZAR CONTRATO"
+                        binding.btnAceptar.setOnClickListener { onFinalizarClick.invoke(solicitud) }
+                    } else {
+                        binding.llAcciones.visibility = View.GONE
+                    }
                 }
                 "FINALIZADA", "COMPLETADA" -> {
                     binding.tvEstado.setBackgroundResource(R.drawable.bg_chip_ok)
                     binding.tvEstado.setTextColor(
                         ContextCompat.getColor(binding.root.context, R.color.chip_ok_tx)
                     )
+                    binding.llAcciones.visibility = View.GONE
                 }
                 else -> {
                     binding.tvEstado.setBackgroundResource(R.drawable.bg_chip_pen)
                     binding.tvEstado.setTextColor(
                         ContextCompat.getColor(binding.root.context, R.color.chip_pen_tx)
                     )
+                    binding.llAcciones.visibility = View.GONE
                 }
             }
 
