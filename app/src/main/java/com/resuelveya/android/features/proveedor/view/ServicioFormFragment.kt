@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
+import com.resuelveya.android.R
 import com.resuelveya.android.core.network.ErrorResponse
 import com.resuelveya.android.databinding.FragmentServicioFormBinding
 import com.resuelveya.android.features.proveedor.controller.CategoriaResponse
@@ -28,6 +29,36 @@ class ServicioFormFragment : Fragment() {
     private var categorias: List<CategoriaResponse> = emptyList()
     private var selectedCategoriaId: Long? = null
 
+    private var servicioId: Long = -1L
+    private var initialTitulo: String = ""
+    private var initialDescripcion: String = ""
+    private var initialPrecioEstimado: Double = 0.0
+    private var initialTiempoEstimado: String = ""
+    private var initialCategoriaId: Long = -1L
+    private var initialCategoriaNombre: String = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            servicioId = it.getLong("servicioId", -1L)
+            initialTitulo = it.getString("titulo", "") ?: ""
+            initialDescripcion = it.getString("descripcion", "") ?: ""
+            initialPrecioEstimado = if (it.containsKey("precioEstimado")) {
+                when (val v = it.get("precioEstimado")) {
+                    is Double -> v
+                    is Float -> v.toDouble()
+                    is Number -> v.toDouble()
+                    else -> 0.0
+                }
+            } else {
+                0.0
+            }
+            initialTiempoEstimado = it.getString("tiempoEstimado", "") ?: ""
+            initialCategoriaId = it.getLong("categoriaId", -1L)
+            initialCategoriaNombre = it.getString("categoriaNombre", "") ?: ""
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,8 +70,32 @@ class ServicioFormFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        populateDataIfEditing()
         setupListeners()
         cargarCategorias()
+    }
+
+    private fun populateDataIfEditing() {
+        if (servicioId > 0) {
+            binding.etNombreServicio.setText(initialTitulo)
+            binding.etDescripcionServicio.setText(initialDescripcion)
+            if (initialPrecioEstimado > 0) {
+                binding.etTarifa.setText(String.format(java.util.Locale.US, "%.2f", initialPrecioEstimado))
+            }
+            val cleanDuration = initialTiempoEstimado
+                .replace("horas", "", ignoreCase = true)
+                .replace("hora", "", ignoreCase = true)
+                .trim()
+            binding.etDuracion.setText(cleanDuration)
+
+            if (initialCategoriaId > 0) {
+                selectedCategoriaId = initialCategoriaId
+            }
+            if (initialCategoriaNombre.isNotBlank()) {
+                binding.actEspecialidad.setText(initialCategoriaNombre, false)
+            }
+            binding.btnGuardarServicio.text = getString(R.string.servicio_form_btn_actualizar)
+        }
     }
 
     private fun setupListeners() {
@@ -72,6 +127,13 @@ class ServicioFormFragment : Fragment() {
 
                     binding.actEspecialidad.setOnItemClickListener { _, _, position, _ ->
                         selectedCategoriaId = categorias[position].id
+                    }
+
+                    if (selectedCategoriaId != null) {
+                        val matchingCat = categorias.firstOrNull { it.id == selectedCategoriaId }
+                        if (matchingCat != null) {
+                            binding.actEspecialidad.setText(matchingCat.nombre, false)
+                        }
                     }
                 }
             }
@@ -137,31 +199,59 @@ class ServicioFormFragment : Fragment() {
 
         binding.btnGuardarServicio.isEnabled = false
 
-        repository.crearServicio(request, object : Callback<ServicioProveedor> {
-            override fun onResponse(
-                call: Call<ServicioProveedor>,
-                response: Response<ServicioProveedor>
-            ) {
-                if (_binding == null) return
-                binding.btnGuardarServicio.isEnabled = true
+        if (servicioId > 0) {
+            repository.actualizarServicio(servicioId, request, object : Callback<ServicioProveedor> {
+                override fun onResponse(
+                    call: Call<ServicioProveedor>,
+                    response: Response<ServicioProveedor>
+                ) {
+                    if (_binding == null) return
+                    binding.btnGuardarServicio.isEnabled = true
 
-                if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Servicio creado exitosamente", Toast.LENGTH_SHORT).show()
-                    findNavController().popBackStack()
-                    return
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "Servicio actualizado exitosamente", Toast.LENGTH_SHORT).show()
+                        findNavController().popBackStack()
+                        return
+                    }
+
+                    val errorBody = response.errorBody()?.string()
+                    val errorMsg = parseErrorMessage(errorBody) ?: "Error al actualizar servicio (${response.code()})"
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
                 }
 
-                val errorBody = response.errorBody()?.string()
-                val errorMsg = parseErrorMessage(errorBody) ?: "Error al guardar servicio (${response.code()})"
-                Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
-            }
+                override fun onFailure(call: Call<ServicioProveedor>, t: Throwable) {
+                    if (_binding == null) return
+                    binding.btnGuardarServicio.isEnabled = true
+                    Toast.makeText(requireContext(), "Error de conexión: ${t.localizedMessage}", Toast.LENGTH_LONG).show()
+                }
+            })
+        } else {
+            repository.crearServicio(request, object : Callback<ServicioProveedor> {
+                override fun onResponse(
+                    call: Call<ServicioProveedor>,
+                    response: Response<ServicioProveedor>
+                ) {
+                    if (_binding == null) return
+                    binding.btnGuardarServicio.isEnabled = true
 
-            override fun onFailure(call: Call<ServicioProveedor>, t: Throwable) {
-                if (_binding == null) return
-                binding.btnGuardarServicio.isEnabled = true
-                Toast.makeText(requireContext(), "Error de conexión: ${t.localizedMessage}", Toast.LENGTH_LONG).show()
-            }
-        })
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "Servicio creado exitosamente", Toast.LENGTH_SHORT).show()
+                        findNavController().popBackStack()
+                        return
+                    }
+
+                    val errorBody = response.errorBody()?.string()
+                    val errorMsg = parseErrorMessage(errorBody) ?: "Error al guardar servicio (${response.code()})"
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
+                }
+
+                override fun onFailure(call: Call<ServicioProveedor>, t: Throwable) {
+                    if (_binding == null) return
+                    binding.btnGuardarServicio.isEnabled = true
+                    Toast.makeText(requireContext(), "Error de conexión: ${t.localizedMessage}", Toast.LENGTH_LONG).show()
+                }
+            })
+        }
     }
 
     private fun parseErrorMessage(errorJson: String?): String? {

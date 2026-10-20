@@ -8,7 +8,8 @@ import com.resuelveya.android.features.proveedor.controller.ServicioProveedor
 
 class ServiciosAdapter(
     private var items: List<ServicioProveedor> = emptyList(),
-    private val onEliminarClick: (ServicioProveedor) -> Unit
+    private val onEliminarClick: (ServicioProveedor) -> Unit,
+    private val onEditarClick: (ServicioProveedor) -> Unit
 ) : RecyclerView.Adapter<ServiciosAdapter.ServicioViewHolder>() {
 
     fun updateList(newItems: List<ServicioProveedor>) {
@@ -44,6 +45,9 @@ class ServiciosAdapter(
 
             binding.btnEliminar.setOnClickListener {
                 onEliminarClick(servicio)
+            }
+            binding.btnEditar.setOnClickListener {
+                onEditarClick(servicio)
             }
         }
     }

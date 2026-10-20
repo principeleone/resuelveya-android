@@ -8,6 +8,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ProveedorApi {
@@ -17,6 +18,12 @@ interface ProveedorApi {
 
     @POST("api/v1/tecnico/servicios")
     fun crearServicio(
+        @Body request: ServicioRequest
+    ): Call<ServicioProveedor>
+
+    @PUT("api/v1/tecnico/servicios/{id}")
+    fun actualizarServicio(
+        @Path("id") id: Long,
         @Body request: ServicioRequest
     ): Call<ServicioProveedor>
 

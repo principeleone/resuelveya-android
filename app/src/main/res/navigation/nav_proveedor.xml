@@ -15,7 +15,11 @@
         android:id="@+id/solicitudesRecibidasFragment"
         android:name="com.resuelveya.android.features.proveedor.view.SolicitudesRecibidasFragment"
         android:label="@string/proveedor_menu_solicitudes"
-        tools:layout="@layout/fragment_solicitudes_recibidas" />
+        tools:layout="@layout/fragment_solicitudes_recibidas">
+        <action
+            android:id="@+id/action_solicitudes_to_detalle"
+            app:destination="@id/solicitudDetalleFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/misServiciosFragment"
@@ -30,8 +34,38 @@
     <fragment
         android:id="@+id/servicioFormFragment"
         android:name="com.resuelveya.android.features.proveedor.view.ServicioFormFragment"
-        android:label="Nuevo Servicio"
-        tools:layout="@layout/fragment_servicio_form" />
+        android:label="Servicio"
+        tools:layout="@layout/fragment_servicio_form">
+
+        <argument
+            android:name="servicioId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <argument
+            android:name="titulo"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="descripcion"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="precioEstimado"
+            app:argType="float"
+            android:defaultValue="0" />
+        <argument
+            android:name="tiempoEstimado"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="categoriaId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <argument
+            android:name="categoriaNombre"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
 
     <fragment
         android:id="@+id/perfilFragment"
@@ -39,4 +73,44 @@
         android:label="@string/proveedor_menu_perfil"
         tools:layout="@layout/fragment_perfil" />
 
-</navigation>
+    <fragment
+        android:id="@+id/solicitudDetalleFragment"
+        android:name="com.resuelveya.android.features.proveedor.view.SolicitudDetalleFragment"
+        android:label="@string/detalle_titulo"
+        tools:layout="@layout/fragment_solicitud_detalle">
+
+        <argument
+            android:name="solicitudId"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <argument
+            android:name="clienteNombre"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="servicioTitulo"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="descripcion"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="fechaProgramada"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="direccionAtencion"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="precioAcordado"
+            app:argType="float"
+            android:defaultValue="0" />
+        <argument
+            android:name="estado"
+            app:argType="string"
+            android:defaultValue="ACEPTADA" />
+    </fragment>
+
+</navigation>

@@ -39,13 +39,31 @@ class MisServiciosFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
         cargarServicios()
     }
 
     private fun setupRecyclerView() {
-        adapter = ServiciosAdapter { servicio ->
-            confirmarEliminacion(servicio)
-        }
+        adapter = ServiciosAdapter(
+            onEliminarClick = { servicio ->
+                confirmarEliminacion(servicio)
+            },
+            onEditarClick = { servicio ->
+                val bundle = androidx.core.os.bundleOf(
+                    "servicioId" to (servicio.id ?: -1L),
+                    "titulo" to (servicio.titulo ?: ""),
+                    "descripcion" to (servicio.descripcion ?: ""),
+                    "precioEstimado" to (servicio.precioEstimado?.toFloat() ?: 0f),
+                    "tiempoEstimado" to (servicio.tiempoEstimado ?: ""),
+                    "categoriaId" to (servicio.categoriaId ?: -1L),
+                    "categoriaNombre" to (servicio.categoriaNombre ?: "")
+                )
+                findNavController().navigate(R.id.action_misServiciosFragment_to_servicioFormFragment, bundle)
+            }
+        )
         binding.rvServicios.layoutManager = LinearLayoutManager(requireContext())
         binding.rvServicios.adapter = adapter
     }

@@ -66,6 +66,7 @@
             android:layout_marginTop="2dp"
             android:textAppearance="@style/TextAppearance.ResuelveYa.Caption"
             android:textColor="@color/text_muted"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvFechaHora"
             app:layout_constraintTop_toBottomOf="@id/tvFechaHora"
@@ -81,38 +82,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Nueva" />
-
-        <LinearLayout
-            android:id="@+id/llAcciones"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_sm"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDireccionAtencion">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnRechazar"
-                style="@style/Widget.ResuelveYa.Button.Outlined"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/spacing_xs"
-                android:layout_weight="1"
-                android:text="@string/proveedor_btn_rechazar"
-                android:textColor="@color/error" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAceptar"
-                style="@style/Widget.ResuelveYa.Button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_xs"
-                android:layout_weight="1"
-                android:text="@string/proveedor_btn_aceptar" />
-        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

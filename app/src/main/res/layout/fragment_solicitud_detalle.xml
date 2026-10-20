@@ -1,14 +1,314 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_screen"
     tools:context=".features.proveedor.view.SolicitudDetalleFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/barrierBottomActions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clContenido"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_lg">
+
+            <!-- Encabezado: Estado -->
+            <TextView
+                android:id="@+id/tvEstadoLabel"
+                style="@style/Widget.ResuelveYa.Estado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip_pro"
+                android:textColor="@color/chip_pro_tx"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="ACEPTADA" />
+
+            <!-- Card Resumen del Contrato -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardResumen"
+                style="@style/Widget.ResuelveYa.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvEstadoLabel">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/spacing_md">
+
+                    <!-- Icono avatar -->
+                    <ImageView
+                        android:id="@+id/ivAvatar"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_avatar"
+                        android:importantForAccessibility="no"
+                        android:padding="12dp"
+                        android:src="@drawable/ic_person"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/primary" />
+
+                    <TextView
+                        android:id="@+id/tvCliente"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_md"
+                        android:textAppearance="@style/TextAppearance.ResuelveYa.Title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivAvatar"
+                        app:layout_constraintTop_toTopOf="@id/ivAvatar"
+                        tools:text="Carlos Pérez" />
+
+                    <TextView
+                        android:id="@+id/tvServicio"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_md"
+                        android:layout_marginTop="2dp"
+                        android:textAppearance="@style/TextAppearance.ResuelveYa.Caption"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivAvatar"
+                        app:layout_constraintTop_toBottomOf="@id/tvCliente"
+                        tools:text="Revisión eléctrica" />
+
+                    <!-- Divider -->
+                    <View
+                        android:id="@+id/divider1"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:background="@color/border"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvServicio" />
+
+                    <!-- Descripción -->
+                    <TextView
+                        android:id="@+id/tvDescripcionLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:text="@string/detalle_lbl_descripcion"
+                        android:textAppearance="@style/TextAppearance.ResuelveYa.Caption"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/divider1" />
+
+                    <TextView
+                        android:id="@+id/tvDescripcion"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textAppearance="@style/TextAppearance.ResuelveYa.Caption"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvDescripcionLabel"
+                        tools:text="Se necesita revisar el tablero eléctrico general" />
+
+                    <!-- Fecha -->
+                    <ImageView
+                        android:id="@+id/icFecha"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_calendar"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvDescripcion"
+                        app:tint="@color/text_muted" />
+
+                    <TextView
+                        android:id="@+id/tvFecha"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:textAppearance="@style/TextAppearance.ResuelveYa.Caption"
+                        android:textSize="13sp"
+                        app:layout_constraintBottom_toBottomOf="@id/icFecha"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/icFecha"
+                        app:layout_constraintTop_toTopOf="@id/icFecha"
+                        tools:text="15/10/2026 · 10:00 a. m." />
+
+                    <!-- Dirección -->
+                    <ImageView
+                        android:id="@+id/icDireccion"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_location"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/icFecha"
+                        app:tint="@color/text_muted" />
+
+                    <TextView
+                        android:id="@+id/tvDireccion"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:textAppearance="@style/TextAppearance.ResuelveYa.Caption"
+                        android:textSize="13sp"
+                        app:layout_constraintBottom_toBottomOf="@id/icDireccion"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/icDireccion"
+                        app:layout_constraintTop_toTopOf="@id/icDireccion"
+                        tools:text="Av. Benavides 1234, Surco" />
+
+                    <!-- Precio -->
+                    <ImageView
+                        android:id="@+id/icPrecio"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_money"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/icDireccion"
+                        app:tint="@color/text_muted" />
+
+                    <TextView
+                        android:id="@+id/tvPrecio"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_sm"
+                        android:textAppearance="@style/TextAppearance.ResuelveYa.Caption"
+                        android:textSize="13sp"
+                        app:layout_constraintBottom_toBottomOf="@id/icPrecio"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/icPrecio"
+                        app:layout_constraintTop_toTopOf="@id/icPrecio"
+                        tools:text="S/ 120.00" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Mensaje informativo según estado -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardInfo"
+                style="@style/Widget.ResuelveYa.Card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cardResumen">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/spacing_md">
+
+                    <ImageView
+                        android:id="@+id/ivInfoIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_assignment"
+                        app:tint="@color/primary" />
+
+                    <TextView
+                        android:id="@+id/tvInfoMessage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_md"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.ResuelveYa.Caption"
+                        android:textSize="13sp"
+                        tools:text="Puedes iniciar el trabajo cuando estés listo." />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierBottomActions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="btnAccion,llAccionesPendiente" />
+
+    <!-- Botones para estado PENDIENTE (Aceptar / Rechazar) -->
+    <LinearLayout
+        android:id="@+id/llAccionesPendiente"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginEnd="@dimen/spacing_lg"
+        android:layout_marginBottom="@dimen/spacing_lg"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRechazarDetalle"
+            style="@style/Widget.ResuelveYa.Button.Outlined"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_xs"
+            android:layout_weight="1"
+            android:text="@string/proveedor_btn_rechazar"
+            android:textColor="@color/error"
+            app:strokeColor="@color/error" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAceptarDetalle"
+            style="@style/Widget.ResuelveYa.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_xs"
+            android:layout_weight="1"
+            android:text="@string/proveedor_btn_aceptar" />
+    </LinearLayout>
+
+    <!-- Botón de acción principal (Iniciar / Finalizar) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAccion"
+        style="@style/Widget.ResuelveYa.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginEnd="@dimen/spacing_lg"
+        android:layout_marginBottom="@dimen/spacing_lg"
+        android:text="@string/detalle_btn_iniciar"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

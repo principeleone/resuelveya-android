@@ -137,4 +137,30 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Detalle de Solicitud (Proveedor) -->
+    <string name="detalle_titulo">Detalle del Contrato</string>
+    <string name="detalle_lbl_descripcion">DESCRIPCIÓN</string>
+    <string name="detalle_cliente_default">Cliente</string>
+    <string name="detalle_servicio_default">Servicio solicitado</string>
+    <string name="detalle_sin_descripcion">Sin descripción</string>
+    <string name="detalle_fecha_por_coordinar">Fecha por coordinar</string>
+    <string name="detalle_precio_formato">S/ %.2f</string>
+    <string name="detalle_btn_iniciar">INICIAR TRABAJO</string>
+    <string name="detalle_btn_finalizar">FINALIZAR TRABAJO</string>
+    <string name="detalle_info_aceptada">Solicitud aceptada. Puedes iniciar el trabajo cuando estés listo.</string>
+    <string name="detalle_info_en_proceso">Trabajo en curso. Marca como finalizado cuando termines.</string>
+    <string name="detalle_info_finalizada">El trabajo ha sido completado.</string>
+    <string name="detalle_msg_iniciado_ok">Trabajo iniciado con éxito</string>
+    <string name="detalle_msg_iniciado_offline">Trabajo iniciado (guardado offline, se enviará al conectar)</string>
+    <string name="detalle_msg_finalizado_ok">Trabajo finalizado con éxito</string>
+    <string name="detalle_msg_finalizado_offline">Trabajo finalizado (guardado offline, se enviará al conectar)</string>
+    <string name="detalle_info_pendiente">Nueva solicitud. Revisa los detalles y decide si aceptas o rechazas el servicio.</string>
+    <string name="detalle_info_rechazada">Esta solicitud fue rechazada.</string>
+    <string name="detalle_msg_aceptada_ok">Solicitud aceptada con éxito</string>
+    <string name="detalle_msg_rechazada_ok">Solicitud rechazada</string>
+
+    <!-- Edición de Servicio -->
+    <string name="servicio_form_editar_titulo">Editar Servicio</string>
+    <string name="servicio_form_btn_actualizar">ACTUALIZAR SERVICIO</string>
 </resources>

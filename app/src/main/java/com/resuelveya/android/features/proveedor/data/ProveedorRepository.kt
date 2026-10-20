@@ -18,6 +18,10 @@ class ProveedorRepository {
         proveedorApi.crearServicio(request).enqueue(callback)
     }
 
+    fun actualizarServicio(id: Long, request: ServicioRequest, callback: Callback<ServicioProveedor>) {
+        proveedorApi.actualizarServicio(id, request).enqueue(callback)
+    }
+
     fun eliminarServicio(id: Long, callback: Callback<Void>) {
         proveedorApi.eliminarServicio(id).enqueue(callback)
     }

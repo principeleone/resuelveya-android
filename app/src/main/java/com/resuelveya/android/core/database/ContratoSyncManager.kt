@@ -36,9 +36,25 @@ class ContratoSyncManager(private val context: Context) {
             try {
                 val entities = contratos.map { response ->
                     val existing = response.id?.let { dao.getContratoById(it) }
-                    if (existing != null && existing.syncStatus != "SYNCED") {
-                        // Mantener el estado offline si aún no se sincronizó
-                        existing
+                    if (existing != null) {
+                        // Preservar estado local si aún no se sincronizó o si está EN_PROCESO localmente
+                        val nuevoEstado = if (existing.estado == "EN_PROCESO" && (response.estado == "ACEPTADA" || response.estado == null)) {
+                            "EN_PROCESO"
+                        } else {
+                            response.estado ?: existing.estado
+                        }
+                        val sync = if (existing.syncStatus.startsWith("PENDING")) existing.syncStatus else "SYNCED"
+                        existing.copy(
+                            estado = nuevoEstado,
+                            clienteNombre = response.clienteNombre ?: existing.clienteNombre,
+                            servicioTitulo = response.servicioTitulo ?: existing.servicioTitulo,
+                            descripcion = response.descripcion ?: existing.descripcion,
+                            direccionAtencion = response.direccionAtencion ?: existing.direccionAtencion,
+                            fechaProgramada = response.fechaProgramada ?: existing.fechaProgramada,
+                            precioAcordado = response.precioAcordado ?: existing.precioAcordado,
+                            syncStatus = sync,
+                            updatedAt = System.currentTimeMillis()
+                        )
                     } else {
                         ContratoEntity.fromSolicitudResponse(response, esProveedor = esProveedor, syncStatus = "SYNCED")
                     }
@@ -67,6 +83,21 @@ class ContratoSyncManager(private val context: Context) {
         }
     }
 
+    fun obtenerContratoPorId(
+        id: Long,
+        onResult: (ContratoEntity?) -> Unit
+    ) {
+        executor.execute {
+            val contrato = try {
+                dao.getContratoById(id)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error leyendo contrato por id $id", e)
+                null
+            }
+            mainHandler.post { onResult(contrato) }
+        }
+    }
+
     fun iniciarContratoLocal(
         solicitudId: Long,
         onSuccess: (ContratoEntity) -> Unit,
@@ -74,31 +105,32 @@ class ContratoSyncManager(private val context: Context) {
     ) {
         executor.execute {
             val contrato = dao.getContratoById(solicitudId)
-            if (contrato == null) {
-                mainHandler.post { onError("Contrato no encontrado en base de datos local") }
-                return@execute
+            val updated = if (contrato != null) {
+                contrato.copy(
+                    estado = "EN_PROCESO",
+                    syncStatus = "SYNCED",
+                    updatedAt = System.currentTimeMillis()
+                )
+            } else {
+                ContratoEntity(
+                    id = solicitudId,
+                    servicioId = null,
+                    servicioTitulo = null,
+                    tecnicoId = null,
+                    tecnicoNombre = null,
+                    clienteId = null,
+                    clienteNombre = null,
+                    descripcion = null,
+                    direccionAtencion = null,
+                    fechaProgramada = null,
+                    precioAcordado = null,
+                    estado = "EN_PROCESO",
+                    esProveedor = true,
+                    syncStatus = "SYNCED",
+                    updatedAt = System.currentTimeMillis()
+                )
             }
-
-            val syncStatus = if (isOnline()) "SYNCED" else "PENDING_INICIAR"
-            val updated = contrato.copy(
-                estado = "EN_PROCESO",
-                syncStatus = syncStatus,
-                updatedAt = System.currentTimeMillis()
-            )
             dao.insert(updated)
-
-            if (isOnline()) {
-                try {
-                    val response = proveedorApi.aceptarSolicitud(solicitudId).execute()
-                    if (!response.isSuccessful) {
-                        // Si falla en backend, marcar como pendiente
-                        dao.updateEstado(solicitudId, "EN_PROCESO", "PENDING_INICIAR")
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error de red al sincronizar inicio de contrato", e)
-                    dao.updateEstado(solicitudId, "EN_PROCESO", "PENDING_INICIAR")
-                }
-            }
 
             val finalEntity = dao.getContratoById(solicitudId) ?: updated
             mainHandler.post { onSuccess(finalEntity) }
