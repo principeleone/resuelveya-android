@@ -49,3 +49,5 @@ output.json
 
 # NDK / CMake
 obj/
+
+history/*

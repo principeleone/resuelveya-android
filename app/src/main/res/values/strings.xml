@@ -1,3 +1,166 @@
 <resources>
-    <string name="app_name">movil</string>
+    <string name="app_name">ResuelveYa Android</string>
+
+    <string name="splash_lema">Técnicos de confianza, al instante</string>
+    <string name="splash_verificando">Verificando sesión...</string>
+    <string name="auth_bienvenido">Bienvenido</string>
+    <string name="auth_subtitulo">Inicia sesión para continuar</string>
+    <string name="auth_correo">Correo electrónico</string>
+    <string name="auth_password">Contraseña</string>
+    <string name="auth_error_login">Correo o contraseña incorrectos</string>
+    <string name="auth_btn_login">INICIAR SESIÓN</string>
+    <string name="auth_sin_cuenta">¿No tienes cuenta?</string>
+    <string name="auth_ir_registro">Regístrate</string>
+    <string name="auth_rol_cliente">Soy Cliente</string>
+    <string name="auth_rol_proveedor">Soy Proveedor</string>
+    <string name="auth_nombres">Nombres</string>
+    <string name="auth_apellidos">Apellidos</string>
+    <string name="auth_telefono">Teléfono</string>
+    <string name="auth_confirmar">Confirmar contraseña</string>
+    <string name="auth_btn_registrar">REGISTRARME</string>
+    <string name="auth_titulo_registro">Crear Cuenta</string>
+    <string name="auth_subtitulo_cliente">Regístrate para solicitar servicios técnicos</string>
+    <string name="auth_subtitulo_proveedor">Regístrate para ofrecer tus servicios como técnico</string>
+    <string name="auth_especialidad">Especialidad u Oficio</string>
+    <string name="auth_experiencia">Años de experiencia</string>
+    <string name="auth_presentacion">Breve descripción de tus servicios</string>
+    <string name="auth_nombre_completo">Nombre completo</string>
+    <string name="auth_ciudad">Ciudad</string>
+    <string name="auth_direccion">Dirección</string>
+    <string name="auth_ya_cuenta">¿Ya tienes una cuenta?</string>
+    <string name="auth_ir_login">Inicia sesión</string>
+    <!-- Navegación Proveedor -->
+    <string name="proveedor_menu_inicio">Inicio</string>
+    <string name="proveedor_menu_solicitudes">Solicitudes</string>
+    <string name="proveedor_menu_servicios">Mis Servicios</string>
+    <string name="proveedor_menu_perfil">Perfil</string>
+    <string name="proveedor_stat_nuevas">Nuevas</string>
+    <string name="proveedor_stat_proceso">En Proceso</string>
+    <string name="proveedor_stat_finalizados">Finalizados</string>
+    <string name="proveedor_stat_calificacion">Calificación</string>
+    <string name="proveedor_ultimas">Últimas solicitudes</string>
+    <string name="proveedor_solicitudes_titulo">Solicitudes Recibidas</string>
+    <string name="proveedor_vacio_solicitudes">No tienes solicitudes pendientes o activas en este momento.</string>
+    <string name="proveedor_btn_aceptar">Aceptar</string>
+    <string name="proveedor_btn_rechazar">Rechazar</string>
+
+    <!-- Servicios Proveedor -->
+    <string name="proveedor_vacio_servicios">Aún no tienes servicios registrados.\nPulsa el botón + para agregar uno.</string>
+    <string name="proveedor_cd_agregar">Agregar nuevo servicio</string>
+    <string name="proveedor_cd_editar">Editar servicio</string>
+    <string name="proveedor_cd_eliminar">Eliminar servicio</string>
+    <string name="proveedor_nombre_servicio">Título del servicio</string>
+    <string name="proveedor_especialidad">Categoría o Especialidad</string>
+    <string name="proveedor_descripcion_servicio">Descripción del servicio</string>
+    <string name="proveedor_tarifa">Precio estimado (S/)</string>
+    <string name="proveedor_duracion">Tiempo estimado (horas)</string>
+    <string name="proveedor_btn_guardar_servicio">GUARDAR SERVICIO</string>
+    <string name="proveedor_btn_cancelar_servicio">CANCELAR</string>
+
+    <!-- Catálogo y Flujo Cliente -->
+    <string name="catalogo_buscar">Buscar servicio o categoría...</string>
+    <string name="catalogo_cerca_titulo">Técnicos cerca de ti</string>
+    <string name="catalogo_cerca_sub">Encuentra profesionales disponibles en tu zona</string>
+    <string name="catalogo_ver_mapa">VER TODOS</string>
+    <string name="catalogo_categorias">Categorías de servicios</string>
+    <string name="catalogo_vacio">No se encontraron categorías disponibles</string>
+    <string name="catalogo_acerca">Acerca del Profesional</string>
+    <string name="catalogo_servicios">Servicios y Tarifas</string>
+    <string name="catalogo_btn_solicitar">SOLICITAR SERVICIO</string>
+    <string name="catalogo_proveedores_titulo">Técnicos Disponibles</string>
+    <string name="catalogo_proveedores_vacio">No hay técnicos disponibles en esta especialidad.</string>
+    <string name="catalogo_servicios_encontrados">Servicios encontrados</string>
+    <string name="catalogo_sin_servicios">No se encontraron servicios que coincidan con la búsqueda.</string>
+    <string name="cliente_menu_inicio">Inicio</string>
+    <string name="cliente_menu_contratos">Contratos</string>
+    <string name="cliente_menu_perfil">Perfil</string>
+    <string name="contrataciones_titulo">Mis Contratos</string>
+    <string name="contrataciones_vacio">Aún no tienes servicios contratados.\nExplora categorías y solicita un servicio.</string>
+
+    <!-- Acciones Generales y Diálogos -->
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="procesando">Procesando...</string>
+    <string name="espera">Por favor espera un momento</string>
+
+    <!-- Solicitudes y Contrataciones -->
+    <string name="solicitudes_descripcion">Describe el problema o requerimiento</string>
+    <string name="solicitudes_fecha">Fecha de atención</string>
+    <string name="solicitudes_hora">Hora estimada</string>
+    <string name="solicitudes_direccion">Dirección de atención</string>
+    <string name="solicitudes_offline">Sin conexión: Tu solicitud se guardará localmente y se enviará al conectarte</string>
+    <string name="solicitudes_btn_enviar">ENVIAR SOLICITUD</string>
+    <string name="solicitudes_banner_pendientes">Tienes solicitudes pendientes de sincronización</string>
+    <string name="solicitudes_vacio">No tienes solicitudes pendientes</string>
+    <string name="solicitudes_btn_sincronizar">SINCRONIZAR AHORA</string>
+    <string name="solicitudes_btn_reintentar">Reintentar</string>
+    <string name="contrataciones_btn_item_chat">Chat</string>
+    <string name="contrataciones_btn_item_finalizar">Finalizar</string>
+    <string name="contrataciones_linea">Línea de tiempo del servicio</string>
+    <string name="contrataciones_btn_chat">ABRIR CHAT</string>
+
+    <!-- Perfil Usuario y Técnico -->
+    <string name="perfil_lbl_correo">Correo electrónico</string>
+    <string name="perfil_lbl_telefono">Teléfono</string>
+    <string name="perfil_lbl_direccion">Dirección</string>
+    <string name="perfil_lbl_ciudad">Ciudad</string>
+    <string name="perfil_lbl_presentacion">Presentación profesional</string>
+    <string name="perfil_lbl_experiencia">Años de experiencia</string>
+    <string name="perfil_lbl_pagos">Métodos de cobro</string>
+    <string name="perfil_lbl_especialidad">Especialidad</string>
+    <string name="perfil_btn_editar">EDITAR PERFIL</string>
+    <string name="perfil_nombre">Nombre completo</string>
+    <string name="perfil_telefono_ed">Teléfono de contacto</string>
+    <string name="perfil_direccion_ed">Dirección</string>
+    <string name="perfil_ciudad_ed">Ciudad</string>
+    <string name="perfil_presentacion_ed">Breve descripción de tus servicios</string>
+    <string name="perfil_experiencia_ed">Años de experiencia</string>
+    <string name="perfil_yape_ed">Número Yape</string>
+    <string name="perfil_plin_ed">Número Plin</string>
+    <string name="perfil_titular_ed">Titular de cuenta / pago</string>
+    <string name="perfil_btn_guardar">GUARDAR CAMBIOS</string>
+    <string name="perfil_btn_cancelar">CANCELAR</string>
+    <string name="perfil_btn_cerrar">CERRAR SESIÓN</string>
+    <string name="perfil_actualizado_exito">Perfil actualizado con éxito</string>
+
+    <!-- Mapa de Servicios Cercanos -->
+    <string name="mapa_buscar_zona">Buscar por zona o distrito...</string>
+    <string name="mapa_chip_todos">Todos</string>
+    <string name="mapa_chip_electricidad">Electricidad</string>
+    <string name="mapa_chip_gasfiteria">Gasfitería</string>
+    <string name="mapa_chip_pintura">Pintura</string>
+    <string name="mapa_chip_carpinteria">Carpintería</string>
+    <string name="mapa_chip_refrigeracion">Refrigeración</string>
+    <string name="mapa_chip_computacion">Computación</string>
+    <string name="mapa_cd_mi_ubicacion">Centrar en mi ubicación</string>
+    <string name="mapa_btn_ver_perfil">VER PERFIL</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Detalle de Solicitud (Proveedor) -->
+    <string name="detalle_titulo">Detalle del Contrato</string>
+    <string name="detalle_lbl_descripcion">DESCRIPCIÓN</string>
+    <string name="detalle_cliente_default">Cliente</string>
+    <string name="detalle_servicio_default">Servicio solicitado</string>
+    <string name="detalle_sin_descripcion">Sin descripción</string>
+    <string name="detalle_fecha_por_coordinar">Fecha por coordinar</string>
+    <string name="detalle_precio_formato">S/ %.2f</string>
+    <string name="detalle_btn_iniciar">INICIAR TRABAJO</string>
+    <string name="detalle_btn_finalizar">FINALIZAR TRABAJO</string>
+    <string name="detalle_info_aceptada">Solicitud aceptada. Puedes iniciar el trabajo cuando estés listo.</string>
+    <string name="detalle_info_en_proceso">Trabajo en curso. Marca como finalizado cuando termines.</string>
+    <string name="detalle_info_finalizada">El trabajo ha sido completado.</string>
+    <string name="detalle_msg_iniciado_ok">Trabajo iniciado con éxito</string>
+    <string name="detalle_msg_iniciado_offline">Trabajo iniciado (guardado offline, se enviará al conectar)</string>
+    <string name="detalle_msg_finalizado_ok">Trabajo finalizado con éxito</string>
+    <string name="detalle_msg_finalizado_offline">Trabajo finalizado (guardado offline, se enviará al conectar)</string>
+    <string name="detalle_info_pendiente">Nueva solicitud. Revisa los detalles y decide si aceptas o rechazas el servicio.</string>
+    <string name="detalle_info_rechazada">Esta solicitud fue rechazada.</string>
+    <string name="detalle_msg_aceptada_ok">Solicitud aceptada con éxito</string>
+    <string name="detalle_msg_rechazada_ok">Solicitud rechazada</string>
+
+    <!-- Edición de Servicio -->
+    <string name="servicio_form_editar_titulo">Editar Servicio</string>
+    <string name="servicio_form_btn_actualizar">ACTUALIZAR SERVICIO</string>
 </resources>

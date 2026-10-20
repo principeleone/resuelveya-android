@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "movil"
+rootProject.name = "ResuelveYa Android"
 include(":app")
  

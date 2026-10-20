@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_cliente"
+    app:startDestination="@id/inicioClienteFragment">
+
+    <fragment
+        android:id="@+id/inicioClienteFragment"
+        android:name="com.resuelveya.android.features.catalogo.view.InicioClienteFragment"
+        android:label="Inicio"
+        tools:layout="@layout/fragment_inicio_cliente">
+        <action
+            android:id="@+id/action_inicioClienteFragment_to_proveedoresFragment"
+            app:destination="@id/proveedoresFragment" />
+        <action
+            android:id="@+id/action_inicioClienteFragment_to_proveedorDetalleFragment"
+            app:destination="@id/proveedorDetalleFragment" />
+        <action
+            android:id="@+id/action_inicioClienteFragment_to_servicioDetalleFragment"
+            app:destination="@id/servicioDetalleFragment" />
+        <action
+            android:id="@+id/action_inicioClienteFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/proveedoresFragment"
+        android:name="com.resuelveya.android.features.catalogo.view.ProveedoresFragment"
+        android:label="Técnicos"
+        tools:layout="@layout/fragment_proveedores">
+        <action
+            android:id="@+id/action_proveedoresFragment_to_proveedorDetalleFragment"
+            app:destination="@id/proveedorDetalleFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/proveedorDetalleFragment"
+        android:name="com.resuelveya.android.features.catalogo.view.ProveedorDetalleFragment"
+        android:label="Detalle del Técnico"
+        tools:layout="@layout/fragment_proveedor_detalle">
+        <action
+            android:id="@+id/action_proveedorDetalleFragment_to_servicioDetalleFragment"
+            app:destination="@id/servicioDetalleFragment" />
+        <action
+            android:id="@+id/action_proveedorDetalleFragment_to_nuevaSolicitudFragment"
+            app:destination="@id/nuevaSolicitudFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/servicioDetalleFragment"
+        android:name="com.resuelveya.android.features.catalogo.view.ServicioDetalleFragment"
+        android:label="Detalle del Servicio"
+        tools:layout="@layout/fragment_servicio_detalle">
+        <action
+            android:id="@+id/action_servicioDetalleFragment_to_nuevaSolicitudFragment"
+            app:destination="@id/nuevaSolicitudFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nuevaSolicitudFragment"
+        android:name="com.resuelveya.android.features.solicitudes.view.NuevaSolicitudFragment"
+        android:label="Nueva Solicitud"
+        tools:layout="@layout/fragment_nueva_solicitud">
+        <action
+            android:id="@+id/action_nuevaSolicitudFragment_to_misContratacionesFragment"
+            app:destination="@id/misContratacionesFragment"
+            app:popUpTo="@id/inicioClienteFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/misContratacionesFragment"
+        android:name="com.resuelveya.android.features.contrataciones.view.MisContratacionesFragment"
+        android:label="Contratos"
+        tools:layout="@layout/fragment_mis_contrataciones">
+        <action
+            android:id="@+id/action_misContratacionesFragment_to_seguimientoFragment"
+            app:destination="@id/seguimientoFragment" />
+        <action
+            android:id="@+id/action_misContratacionesFragment_to_inicioClienteFragment"
+            app:destination="@id/inicioClienteFragment"
+            app:popUpTo="@id/inicioClienteFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/seguimientoFragment"
+        android:name="com.resuelveya.android.features.contrataciones.view.SeguimientoFragment"
+        android:label="Seguimiento de Solicitud"
+        tools:layout="@layout/fragment_seguimiento" />
+
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.resuelveya.android.features.perfil.view.PerfilFragment"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_perfil" />
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.resuelveya.android.features.mapa.MapFragment"
+        android:label="Servicios cerca de ti"
+        tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_mapFragment_to_proveedorDetalleFragment"
+            app:destination="@id/proveedorDetalleFragment" />
+    </fragment>
+
+</navigation>
