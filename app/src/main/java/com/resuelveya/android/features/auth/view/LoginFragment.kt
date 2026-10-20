@@ -17,6 +17,7 @@ import com.resuelveya.android.core.session.SessionManager
 import com.resuelveya.android.databinding.FragmentLoginBinding
 import com.resuelveya.android.features.auth.data.AuthRepository
 import com.resuelveya.android.features.auth.model.AuthResponse
+import com.resuelveya.android.features.auth.model.LoginRequest
 import com.resuelveya.android.features.auth.model.RegisterRequest
 import com.resuelveya.android.features.home.view.MainClienteActivity
 import com.resuelveya.android.features.home.view.MainProveedorActivity
@@ -70,8 +71,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(requireActivity()) { task ->
                 if (!task.isSuccessful) {
-                    val errorMsg = task.exception?.localizedMessage ?: "Error al iniciar sesión"
-                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
+                    Log.w(TAG, "Fallo login Firebase, intentando login directo con backend: ${task.exception?.localizedMessage}")
+                    loginBackendDirectly(email, password)
                     return@addOnCompleteListener
                 }
 
@@ -83,15 +84,50 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     )
                     sendFirebaseLoginToBackend(request)
                 }?.addOnFailureListener { e ->
-                    auth.signOut()
-                    SessionManager.logout()
-                    Toast.makeText(
-                        requireContext(),
-                        "Error al obtener token de Firebase: ${e.localizedMessage}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Log.w(TAG, "Error obteniendo token Firebase, recurriendo a login directo", e)
+                    loginBackendDirectly(email, password)
                 }
             }
+    }
+
+    private fun loginBackendDirectly(email: String, password: String) {
+        val request = LoginRequest(email = email, password = password)
+        authRepository.login(request, object : Callback<AuthResponse> {
+            override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                if (response.isSuccessful) {
+                    val authResponse = response.body()
+                    val jwtToken = authResponse?.token.orEmpty()
+                    val rol = authResponse?.rol.orEmpty()
+
+                    if (jwtToken.isNotEmpty()) {
+                        SessionManager.getInstance().saveToken(jwtToken)
+                    }
+                    if (rol.isNotEmpty()) {
+                        SessionManager.getInstance().saveRol(rol)
+                    }
+
+                    Toast.makeText(requireContext(), "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                    dispatchByRole(rol)
+                    return
+                }
+
+                auth.signOut()
+                SessionManager.logout()
+
+                val errorBody = response.errorBody()?.string()
+                Log.e(TAG, "Fallo en backend direct login [${response.code()}] URL: ${call.request().url} - Body: $errorBody")
+                val errorMessage = parseErrorMessage(errorBody) ?: "Error al iniciar sesión (${response.code()}): $errorBody"
+                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+            }
+
+            override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                auth.signOut()
+                SessionManager.logout()
+                Log.e(TAG, "Fallo de conexión en direct login", t)
+                val errorMsg = "Error de conexión: ${t.localizedMessage ?: "No se pudo contactar al servidor"}"
+                Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     private fun sendFirebaseLoginToBackend(request: RegisterRequest) {
