@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.resuelveya.android.R
 import com.resuelveya.android.core.database.ContratoSyncManager
 import com.resuelveya.android.databinding.FragmentSolicitudesRecibidasBinding
 import com.resuelveya.android.features.catalogo.model.SolicitudResponse
@@ -46,21 +48,17 @@ class SolicitudesRecibidasFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = SolicitudRecibidaAdapter(
             onItemClick = { solicitud ->
-                val estado = solicitud.estado ?: "PENDIENTE"
-                val cliente = solicitud.clienteNombre ?: "Cliente"
-                Toast.makeText(requireContext(), "$cliente · $estado", Toast.LENGTH_SHORT).show()
-            },
-            onAceptarClick = { solicitud ->
-                solicitud.id?.let { id -> aceptarSolicitud(id) }
-            },
-            onRechazarClick = { solicitud ->
-                solicitud.id?.let { id -> rechazarSolicitud(id) }
-            },
-            onIniciarClick = { solicitud ->
-                solicitud.id?.let { id -> iniciarContrato(id) }
-            },
-            onFinalizarClick = { solicitud ->
-                solicitud.id?.let { id -> finalizarContrato(id) }
+                val bundle = Bundle().apply {
+                    putLong("solicitudId", solicitud.id ?: -1L)
+                    putString("clienteNombre", solicitud.clienteNombre.orEmpty())
+                    putString("servicioTitulo", solicitud.servicioTitulo.orEmpty())
+                    putString("descripcion", solicitud.descripcion.orEmpty())
+                    putString("fechaProgramada", solicitud.fechaProgramada.orEmpty())
+                    putString("direccionAtencion", solicitud.direccionAtencion.orEmpty())
+                    putFloat("precioAcordado", solicitud.precioAcordado?.toFloat() ?: 0f)
+                    putString("estado", solicitud.estado ?: "PENDIENTE")
+                }
+                findNavController().navigate(R.id.action_solicitudes_to_detalle, bundle)
             }
         )
 
